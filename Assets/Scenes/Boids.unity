@@ -294,8 +294,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 574863797}
-  m_LocalRotation: {x: 0.092541374, y: -0.00000000741861, z: 6.89487e-10, w: 0.9957089}
-  m_LocalPosition: {x: 0, y: 0.4, z: -0.8}
+  m_LocalRotation: {x: -0.09396551, y: 0.3897601, z: -0.040016517, w: -0.91523564}
+  m_LocalPosition: {x: 11.147158, y: 7.9139624, z: -10.174473}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1139304802}
@@ -606,7 +606,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1159230854
 Transform:
   m_ObjectHideFlags: 0
@@ -657,6 +657,53 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 618472913}
+--- !u!1 &1261641553
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1261641555}
+  - component: {fileID: 1261641554}
+  m_Layer: 0
+  m_Name: BoidSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1261641554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1261641553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40b4a9685c70c440c96d6e58790f7d0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalBoids: 2500
+  spawnRadius: 9
+  spawnLocation: {fileID: 985131698}
+  fishPrefab: {fileID: 7147685746709287111, guid: 4af2c449c6bc54dc4be59e5bb84f7c1f, type: 3}
+--- !u!4 &1261641555
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1261641553}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1407682698 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7147685746709449959, guid: 4af2c449c6bc54dc4be59e5bb84f7c1f, type: 3}
@@ -678,7 +725,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1699889524
 Transform:
   m_ObjectHideFlags: 0
@@ -686,8 +733,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1699889523}
-  m_LocalRotation: {x: -0.07736244, y: 0.9208742, z: -0.23887847, w: -0.29823312}
-  m_LocalPosition: {x: 14.550256, y: 13.118373, z: 20.431208}
+  m_LocalRotation: {x: -0.09396551, y: 0.3897601, z: -0.040016517, w: -0.91523564}
+  m_LocalPosition: {x: 11.147158, y: 7.9139624, z: -10.174473}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2067420862}
@@ -928,14 +975,14 @@ PrefabInstance:
     - target: {fileID: 1407194283, guid: 4af2c449c6bc54dc4be59e5bb84f7c1f, type: 3}
       propertyPath: boundaryBox
       value: 
-      objectReference: {fileID: 985131694}
+      objectReference: {fileID: 985131698}
     - target: {fileID: 7147685746709287111, guid: 4af2c449c6bc54dc4be59e5bb84f7c1f, type: 3}
       propertyPath: m_Name
       value: SimpleSardine
       objectReference: {fileID: 0}
     - target: {fileID: 7147685746709449959, guid: 4af2c449c6bc54dc4be59e5bb84f7c1f, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7147685746709449959, guid: 4af2c449c6bc54dc4be59e5bb84f7c1f, type: 3}
       propertyPath: m_LocalPosition.x

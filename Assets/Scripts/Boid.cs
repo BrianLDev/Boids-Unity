@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using UnityEditor;
 using UnityEngine;
 
 public class Boid : MonoBehaviour {
     public float speed = 5;
-    public Transform boundaryBox;
-    private Vector3 direction;
+    private Boid[] neighbors;
+    private Vector3 direction, goalDirection;
     private bool turning = false;
 
     private void Start() {
@@ -15,15 +16,37 @@ public class Boid : MonoBehaviour {
     }
     
     private void Update() {
-        transform.position += transform.forward * speed * Time.deltaTime;
+        Move();
         HandleTurning();
+        // FindNeighbors();
+        // Separation();
+        // Alignment();
+        // Cohesion;
     }
 
-    private void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Bounds")) {
-            TurnAround();
+    private void Move() {
+        transform.position += transform.forward * speed * Time.deltaTime;
+    }
 
-        }
+    // public static Boid[] FindNeighbors() {
+    //     Boid[] neighbors;
+    // }
+
+    // private void Separation(Boid[] neighbors) {
+
+    // }
+
+    // private void Alignment(Boid[] neighbors) {
+        
+    // }
+
+    // private void Cohesion(Boid[] neighbors) {
+        
+    // }
+
+    private void OnTriggerEnter(Collider other) {
+        if (other.CompareTag("Bounds"))
+            TurnAround();
     }
 
     private void TurnAround() {

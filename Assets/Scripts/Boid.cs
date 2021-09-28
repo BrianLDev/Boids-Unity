@@ -8,7 +8,6 @@ public class Boid : MonoBehaviour {
     private Vector3 velocity, boundaryCenter;
     private float boundaryRadius = 10;
     private Quaternion targetRotation;
-    private bool turningAround = false;
 
     private void Start() {
         velocity = Random.insideUnitSphere.normalized;
@@ -36,20 +35,13 @@ public class Boid : MonoBehaviour {
 
     private void CheckBounds() {
         if ((transform.position - boundaryCenter).magnitude > boundaryRadius * 0.9f) {
-            turningAround = true;
             // targetRotation = Quaternion.Inverse(transform.rotation);
-            targetRotation = Quaternion.LookRotation(boundaryCenter - transform.position + Random.insideUnitSphere * boundaryRadius);
+            targetRotation = Quaternion.LookRotation(boundaryCenter - transform.position + Random.onUnitSphere*boundaryRadius*0.5f);
         }
     }
 
     private void TurningAround() {
-        if (turningAround) {
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed);
-            // check if close enough to target since Slerp will approach but never reach it
-            if (Quaternion.Dot(transform.rotation, targetRotation) > 0.99f) {
-                turningAround = false;
-            }
-        }
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed);
     }
 
     // public static Boid[] FindNeighbors() {

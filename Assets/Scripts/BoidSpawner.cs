@@ -6,21 +6,23 @@ using UnityEngine;
 public class BoidSpawner : MonoBehaviour {
     public static Boid[] population;
     [SerializeField] private int totalBoids = 5000;
-    [SerializeField] private float spawnRadius = 10;
     [SerializeField] private Transform spawnLocation;
     [SerializeField] private GameObject fishPrefab;
+    private float boundaryRadius = 10;
     private Vector3 boidLocation;
 
     private void Start() {
         if (!spawnLocation)
             spawnLocation = this.transform;
+        else
+            boundaryRadius = spawnLocation.localScale.x/2;
+        
         population = new Boid[totalBoids];
         Boid newBoid;
         for (int i=0; i<totalBoids; i++) {
-            boidLocation = new Vector3(Random.Range(spawnLocation.position.x - spawnRadius, spawnLocation.position.x + spawnRadius), 
-                                        Random.Range(spawnLocation.position.y - spawnRadius, spawnLocation.position.y + spawnRadius), 
-                                        Random.Range(spawnLocation.position.z - spawnRadius, spawnLocation.position.z + spawnRadius) );
+            boidLocation = Random.insideUnitSphere.normalized * Random.Range(0, boundaryRadius * 0.9f);
             newBoid = Instantiate(fishPrefab, boidLocation, Quaternion.identity, this.transform).GetComponent<Boid>();
+            newBoid.Initialize(spawnLocation.position, boundaryRadius);
             population.Append(newBoid);
         }
         Debug.Log("Total boids: " + population.Length);

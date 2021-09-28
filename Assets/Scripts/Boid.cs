@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class Boid : MonoBehaviour {
     public float speed = 5;
-    private Boid[] neighbors;
-    private Vector3 velocity, boundaryCenter;
+    public float perceptionRange = 2;
+    public static List<Boid> population;
+    private List<Boid> neighbors;
+    private Vector3 boundaryCenter;
     private float boundaryRadius = 10;
     private Quaternion targetRotation;
 
-    private void Start() {
-        velocity = Random.insideUnitSphere.normalized;
-        transform.forward = velocity;
+    private void Awake() {
+        transform.forward = Random.insideUnitSphere.normalized * speed;
+        if (population == null)
+            population = new List<Boid>();
+        population.Add(this);
     }
 
     public void Initialize(Vector3 boundCenter, float boundRadius) {
@@ -23,7 +27,7 @@ public class Boid : MonoBehaviour {
         Move();
         CheckBounds();
         TurningAround();
-        // FindNeighbors();
+        FindNeighbors(population);
         // Separation();
         // Alignment();
         // Cohesion;
@@ -44,9 +48,19 @@ public class Boid : MonoBehaviour {
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed);
     }
 
-    // public static Boid[] FindNeighbors() {
-    //     Boid[] neighbors;
-    // }
+    private void FindNeighbors(List<Boid> population) {
+        if (neighbors == null)
+            neighbors = new List<Boid>();
+        else
+            neighbors.Clear();
+
+        foreach (Boid other in population) {
+            if ((other.transform.position - transform.position).magnitude < perceptionRange) {
+                neighbors.Add(other);
+            }
+        }
+        Debug.Log(this.name + " found " + neighbors.Count + " neighbors.");
+    }
 
     // private void Separation(Boid[] neighbors) {
 

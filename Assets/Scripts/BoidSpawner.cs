@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class BoidSpawner : MonoBehaviour {
-    public static Boid[] population;
     [SerializeField] private int totalBoids = 5000;
     [Tooltip("Must check or uncheck this before pressing Play in Unity Editor")]
     [SerializeField] private bool useJobSystem = false;
@@ -13,7 +11,7 @@ public class BoidSpawner : MonoBehaviour {
     private float boundaryRadius = 10;
     private Vector3 boidLocation;
 
-    private void Start() {
+    private void Awake() {
         if (!spawnLocation)
             spawnLocation = this.transform;
         else
@@ -26,16 +24,17 @@ public class BoidSpawner : MonoBehaviour {
         }
     }
 
+    private void Start() {
+        Debug.Log("Total boids: " + Boid.population.Count);
+    }
+
     public void SpawnBoids(int number) {
-        population = new Boid[totalBoids];
         Boid newBoid;
         for (int i=0; i<totalBoids; i++) {
             boidLocation = Random.insideUnitSphere.normalized * Random.Range(0, boundaryRadius * 0.9f);
             newBoid = Instantiate(fishPrefab, boidLocation, Quaternion.identity, this.transform).GetComponent<Boid>();
             newBoid.Initialize(spawnLocation.position, boundaryRadius);
-            population.Append(newBoid);
         }
-        Debug.Log("Total boids: " + population.Length);
     }
 
     public void SpawnBoidsJobs(int number) {

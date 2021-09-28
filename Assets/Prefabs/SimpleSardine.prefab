@@ -515,9 +515,9 @@ GameObject:
   - component: {fileID: 7147685746709449959}
   - component: {fileID: 7147685746699903823}
   - component: {fileID: 1407194283}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SimpleSardine
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -570,6 +570,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  boundaryBox: {fileID: 0}
 --- !u!1 &7147685746709287113
 GameObject:
   m_ObjectHideFlags: 0

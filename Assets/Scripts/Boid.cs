@@ -1,21 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Assertions.Comparers;
 
 public class Boid : MonoBehaviour {
     public static List<Boid> population;
-    [Range(0, 5f)]
-    public float speed = 3;
-    [Range(0, 2.5f)]
-    public float perceptionRange = 0.5f;
-    [Range(0, 5f)]
-    public float separationStrength = 1f;
-    [Range(0, 5f)]
-    public float alignmentStrength = 1f;
-    [Range(0, 5f)]
-    public float cohesionStrength = 1f;
+    public BoidSettings boidSettings;
     private List<Boid> neighbors;
     private Vector3 boundaryCenter;
     private float boundaryRadius = 10;
@@ -23,7 +12,7 @@ public class Boid : MonoBehaviour {
     private Vector3 velocityAdj, targetVelocity; 
 
     private void Awake() {
-        transform.forward = Random.insideUnitSphere.normalized * speed;
+        transform.forward = Random.insideUnitSphere.normalized * boidSettings.speed;
         if (population == null)
             population = new List<Boid>();
         population.Add(this);
@@ -43,7 +32,7 @@ public class Boid : MonoBehaviour {
     }
 
     private void MoveFwd() {
-        transform.position += transform.forward * speed * Time.deltaTime;
+        transform.position += transform.forward * boidSettings.speed * Time.deltaTime;
     }
 
     private void CheckBounds() {
@@ -54,11 +43,11 @@ public class Boid : MonoBehaviour {
     }
 
     private void TurningAround() {
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * boidSettings.speed);
     }
 
     private void Flocking() {
-        // FindNeighbors();
+        FindNeighbors();
         // Separation();
         // Alignment();
         // Cohesion;
@@ -71,7 +60,7 @@ public class Boid : MonoBehaviour {
             neighbors.Clear();
 
         // sqrMagnitude is a bit faster than Magnitude since it doesn't require sqrt
-        float sqrPerceptionRange = perceptionRange * perceptionRange;
+        float sqrPerceptionRange = boidSettings.perceptionRange * boidSettings.perceptionRange;
         float sqrMagnitudeTemp = 0f;
         foreach (Boid other in population) {
             sqrMagnitudeTemp = (other.transform.position - transform.position).sqrMagnitude;
@@ -91,10 +80,10 @@ public class Boid : MonoBehaviour {
                 Debug.Log("Velocity adj " + velocityAdj);
             }
             velocityAdj /= neighbors.Count; // get avg inverted distance
-            velocityAdj *= speed;
+            velocityAdj *= boidSettings.speed;
 
             if (targetVelocity == Vector3.zero) {
-                targetVelocity = transform.forward * speed + velocityAdj;
+                targetVelocity = transform.forward * boidSettings.speed + velocityAdj;
             } else {
                 targetVelocity += velocityAdj;
             }

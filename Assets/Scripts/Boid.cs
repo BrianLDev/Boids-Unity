@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
+using UnityEngine.Timeline;
 
 public class Boid : MonoBehaviour {
     public static List<Boid> population;
@@ -9,7 +11,7 @@ public class Boid : MonoBehaviour {
     private Vector3 boundaryCenter;
     private float boundaryRadius = 10;
     private Quaternion targetRotation;
-    private Vector3 velocityAdj, targetVelocity; 
+    private Vector3 separationForce, alignmentForce, cohesionForce, acceleration; 
 
     private void Awake() {
         transform.forward = Random.insideUnitSphere.normalized * boidSettings.speed;
@@ -21,36 +23,37 @@ public class Boid : MonoBehaviour {
     public void Initialize(Vector3 boundCenter, float boundRadius) {
         boundaryCenter = boundCenter;
         boundaryRadius = boundRadius;
-        targetVelocity = new Vector3(0,0,0);
+        acceleration = new Vector3(0,0,0);
     }
-    
-    private void Update() {
+
+    private void FixedUpdate() {
         MoveFwd();
-        CheckBounds();
-        TurningAround();
-        Flocking();
+        TurnAtBounds();
+        Flocking();    
     }
 
     private void MoveFwd() {
         transform.position += transform.forward * boidSettings.speed * Time.deltaTime;
     }
 
-    private void CheckBounds() {
+    private void TurnAtBounds() {
         if ((transform.position - boundaryCenter).magnitude > boundaryRadius * 0.9f) {
             // targetRotation = Quaternion.Inverse(transform.rotation);
             targetRotation = Quaternion.LookRotation(boundaryCenter - transform.position + Random.onUnitSphere*boundaryRadius*0.5f);
         }
-    }
-
-    private void TurningAround() {
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * boidSettings.speed);
     }
 
     private void Flocking() {
         FindNeighbors();
-        // Separation();
+        Separation();
         // Alignment();
         // Cohesion;
+        
+        acceleration = separationForce + alignmentForce + cohesionForce;
+        transform.position += acceleration * Time.deltaTime;
+        // reset forces
+        separationForce = alignmentForce = cohesionForce = Vector3.zero;
     }
 
     private void FindNeighbors() {
@@ -71,38 +74,43 @@ public class Boid : MonoBehaviour {
         }
     }
 
+    // Separation = Steer to avoid crowding local flockmates
     private void Separation() {
-        if (neighbors != null && neighbors.Count > 0) {
-            velocityAdj = Vector3.zero; // reset velocity adjustment
+        if (neighbors == null || neighbors.Count <= 0) {
+            return;
+        } 
+        else {
             foreach (Boid other in neighbors) {
                 // calc separation Vector and invert (larger distance = smaller value)
-                velocityAdj += (other.transform.position-transform.position) / (other.transform.position-transform.position).magnitude;
-                Debug.Log("Velocity adj " + velocityAdj);
+                separationForce += (other.transform.position-transform.position) / (other.transform.position-transform.position).magnitude;
             }
-            velocityAdj /= neighbors.Count; // get avg inverted distance
-            velocityAdj *= boidSettings.speed;
+            separationForce /= neighbors.Count; // get avg inverted distance
+            separationForce *= boidSettings.speed;
+            Debug.Log("Separation Force " + separationForce);   
+        }
+    }
 
-            if (targetVelocity == Vector3.zero) {
-                targetVelocity = transform.forward * boidSettings.speed + velocityAdj;
-            } else {
-                targetVelocity += velocityAdj;
-            }
-            Debug.Log("Velocity adj " + velocityAdj);
-            // handle movement
-            if (velocityAdj != null && velocityAdj.magnitude > 0) {
-                Debug.Log("Moving from " + transform.position + " to " + transform.position + velocityAdj);
-                transform.position = Vector3.Slerp(transform.position, targetVelocity, Time.deltaTime);
+    // Alignment = Steer towards the average heading of local flockmates
+    private void Alignment() {
+        if (neighbors == null || neighbors.Count <= 0) {
+            return;
+        }
+        else {
+            foreach (Boid other in neighbors) {
+
             }
         }
     }
 
-    // private void Alignment() {
-        
-    // }
-
-    // private void Cohesion() {
-        
-    // }
+    // Cohesion = Steer to move toward the average position of local flockmates
+    private void Cohesion() {
+        if (neighbors == null || neighbors.Count <= 0) {
+            return;
+        }
+        else {
+            
+        }
+    }
 
 
 }

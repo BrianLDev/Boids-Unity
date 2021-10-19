@@ -15,7 +15,7 @@ MonoBehaviour:
   mass: 1
   speed: 4.1
   perceptionRange: 0.4
-  separationStrength: 1
+  separationStrength: 0.3
   alignmentStrength: 1
   cohesionStrength: 1
   moveFwd: 1

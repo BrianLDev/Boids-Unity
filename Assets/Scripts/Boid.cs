@@ -4,12 +4,17 @@ using UnityEngine;
 
 public class Boid : MonoBehaviour {
     public static List<Boid> population;
+
     public BoidSettings boidSettings;
-    private List<Boid> neighbors;
     private Vector3 boundaryCenter;
     private float boundaryRadius = 10;
     private Quaternion targetRotation;
     private Vector3 velocity, acceleration, separationForce, alignmentForce, cohesionForce;
+    // variables for FindNeighbors made global to minimize garbage collection
+    private Dictionary<Boid, (Vector3, float)> neighbors;  // stores Boid as dictionary key and value = a tuple of Vector3 vectorBetween, float of squared distance for fast lookup
+    private Vector3 vectorBetween;
+    private float sqrPerceptionRange, sqrMagnitudeTemp; 
+
 
     private void Awake() {
         if (population == null)
@@ -31,7 +36,7 @@ public class Boid : MonoBehaviour {
 
     private void FixedUpdate() {
         Flocking(); // handles Separation, Alignment, Cohesion forces
-        Move();
+        Move(); // handles movement (shocker!) except for boundary turning which is handled below
         TurnAtBounds(); // makes sure boids turn back when they reach bounds
         ResetForces(); // set all forces to 0 since intertial bodies continue at same speed unless a force acts on them
     }
@@ -74,18 +79,22 @@ public class Boid : MonoBehaviour {
 
     private void FindNeighbors() {
         if (neighbors == null)
-            neighbors = new List<Boid>();
+            neighbors = new Dictionary<Boid, (Vector3, float)>();
         else
             neighbors.Clear();
 
-        // sqrMagnitude is a bit faster than Magnitude since it doesn't require sqrt
-        float sqrPerceptionRange = boidSettings.perceptionRange * boidSettings.perceptionRange;
-        float sqrMagnitudeTemp = 0f;
+        // sqrMagnitude is a bit faster than Magnitude since it doesn't require sqrt function
+        sqrPerceptionRange = boidSettings.perceptionRange * boidSettings.perceptionRange;
+        vectorBetween = Vector3.zero;
+        sqrMagnitudeTemp = 0f;
         foreach (Boid other in population) {
-            sqrMagnitudeTemp = (other.transform.position - transform.position).sqrMagnitude;
+            vectorBetween = other.transform.position - transform.position;
+            sqrMagnitudeTemp = vectorBetween.sqrMagnitude;
             if (sqrMagnitudeTemp < sqrPerceptionRange) {
-                if (other != this) // skip self
-                    neighbors.Add(other);
+                if (other != this) {    // skip self
+                    // store the neighbor Boid as dictionary key, with value = a tuple of Vector3 vectorBetween, float of the distance squared for super fast lookups.
+                    neighbors.Add(other, (vectorBetween, sqrMagnitudeTemp));
+                }
             }
         }
     }
@@ -97,11 +106,11 @@ public class Boid : MonoBehaviour {
                 return;
             } 
             else {
-                foreach (Boid other in neighbors) {
-                    // get the vector between self/other and flip it (avoid instead of seek)
-                    separationForce -= other.transform.position-transform.position;
+                foreach (KeyValuePair<Boid, (Vector3, float)> item in neighbors) {
+                    // get the vector between self/other (Item1), then multiply by inverse squared magnitude of distance (Item2), then flip the sign from positive to negative (avoid instead of seek)
+                    separationForce -= (item.Value.Item1 * 1/item.Value.Item2);
                 }
-                separationForce /= neighbors.Count; // get avg
+                separationForce /= neighbors.Count; // get avg separationForce
                 separationForce *= boidSettings.separationStrength;
                 ApplyForce(separationForce);
                 // Debug.Log("Separation Force " + separationForce);   
@@ -116,8 +125,8 @@ public class Boid : MonoBehaviour {
                 return;
             }
             else {
-                foreach (Boid other in neighbors) {
-
+                foreach (KeyValuePair<Boid, (Vector3, float)> item in neighbors) {
+                    // TODO: CODE THIS
                 }
             }
         }
@@ -130,7 +139,9 @@ public class Boid : MonoBehaviour {
                 return;
             }
             else {
-                
+                foreach (KeyValuePair<Boid, (Vector3, float)> item in neighbors) {
+                    // TODO: CODE THIS
+                }
             }
         }
     }

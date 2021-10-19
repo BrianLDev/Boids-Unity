@@ -4,6 +4,9 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "BoidSettings", menuName = "ScriptableObjects/BoidSettings", order = 1)]
 public class BoidSettings : ScriptableObject {
+    public int totalBoids = 250;
+    [Tooltip("Must check or uncheck this before pressing Play in Unity Editor")]
+    public bool spawnUsingJobSystem = false;
     [Range(0, 5f)]
     public float mass = 1;
     [Range(0, 10f)]

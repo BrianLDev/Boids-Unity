@@ -33,7 +33,7 @@ public class BoidSpawner : MonoBehaviour {
         for (int i=0; i<totalBoids; i++) {
             boidLocation = Random.insideUnitSphere.normalized * Random.Range(0, boundaryRadius * 0.9f);
             newBoid = Instantiate(fishPrefab, boidLocation, Quaternion.identity, this.transform).GetComponent<Boid>();
-            newBoid.Initialize(spawnLocation.position, boundaryRadius);
+            newBoid.SetBoundarySphere(spawnLocation.position, boundaryRadius);
         }
     }
 

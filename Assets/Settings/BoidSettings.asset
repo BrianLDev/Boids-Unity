@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57ddf2c09ee1945048d82146369d9110, type: 3}
   m_Name: BoidSettings
   m_EditorClassIdentifier: 
-  speed: 3
+  mass: 1
+  speed: 2.1
   perceptionRange: 0.25
-  separationStrength: 1
+  separationStrength: 5
   alignmentStrength: 1
   cohesionStrength: 1
+  boundsOn: 1

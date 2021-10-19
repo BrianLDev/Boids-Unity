@@ -31,7 +31,7 @@ public class Boid : MonoBehaviour {
 
     private void FixedUpdate() {
         Flocking(); // handles Separation, Alignment, Cohesion forces
-        MoveFwd();
+        Move();
         TurnAtBounds(); // makes sure boids turn back when they reach bounds
         ResetForces(); // set all forces to 0 since intertial bodies continue at same speed unless a force acts on them
     }
@@ -45,20 +45,24 @@ public class Boid : MonoBehaviour {
         acceleration = separationForce = alignmentForce = cohesionForce = Vector3.zero;
     }
 
-    private void MoveFwd() {
-        velocity = (transform.forward + acceleration) * boidSettings.speed;
-        transform.position += velocity * Time.fixedDeltaTime;
+    private void Move() {
+        velocity = Vector3.zero;    // reset velocity
+        if (boidSettings.moveFwd)
+            velocity = transform.forward * boidSettings.speed;  // add forward movement
+        velocity += acceleration * boidSettings.speed;  // add acceleration
+        // Debug.Log("Velocity = " + velocity);
+        transform.position += velocity * Time.fixedDeltaTime;   // move position
     }
 
     private void TurnAtBounds() {
         if (!boidSettings.boundsOn) {
             return;
         }
-        else if ((transform.position - boundaryCenter).magnitude > boundaryRadius * 0.9f) {
+        else if ((transform.position - boundaryCenter).sqrMagnitude > (boundaryRadius * boundaryRadius) * 0.9f) {
             // targetRotation = Quaternion.Inverse(transform.rotation);
             targetRotation = Quaternion.LookRotation(boundaryCenter - transform.position + Random.onUnitSphere*boundaryRadius*0.5f);
         }
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * boidSettings.speed);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * boidSettings.speed);
     }
 
     private void Flocking() {
@@ -94,11 +98,12 @@ public class Boid : MonoBehaviour {
             } 
             else {
                 foreach (Boid other in neighbors) {
-                    // calc separation Vector and invert (larger distance = smaller value)
-                    separationForce += (other.transform.position-transform.position) / (other.transform.position-transform.position).magnitude;
+                    // get the vector between self/other and flip it (avoid instead of seek)
+                    separationForce -= other.transform.position-transform.position;
                 }
-                separationForce /= neighbors.Count; // get avg inverted distance
+                separationForce /= neighbors.Count; // get avg
                 separationForce *= boidSettings.separationStrength;
+                ApplyForce(separationForce);
                 // Debug.Log("Separation Force " + separationForce);   
             }
         }

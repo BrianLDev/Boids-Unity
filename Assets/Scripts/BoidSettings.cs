@@ -16,5 +16,6 @@ public class BoidSettings : ScriptableObject {
     public float alignmentStrength = 1f;
     [Range(0, 5f)]
     public float cohesionStrength = 1f;
+    public bool moveFwd = true;
     public bool boundsOn = true;
 }

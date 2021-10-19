@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 
 public class BoidSpawner : MonoBehaviour {
@@ -8,6 +9,8 @@ public class BoidSpawner : MonoBehaviour {
     [SerializeField] private bool useJobSystem = false;
     [SerializeField] private Transform spawnLocation;
     [SerializeField] private GameObject fishPrefab;
+    [SerializeField] private CinemachineVirtualCamera mainVCam;
+    [SerializeField] private CinemachineVirtualCamera fishVCam;
     private float boundaryRadius = 10;
     private Vector3 boidLocation;
 
@@ -17,14 +20,15 @@ public class BoidSpawner : MonoBehaviour {
         else
             boundaryRadius = spawnLocation.localScale.x/2;
         
-        if (useJobSystem) {
+        if (useJobSystem)
             SpawnBoidsJobs(totalBoids);
-        } else {
+        else
             SpawnBoids(totalBoids);
-        }
     }
 
     private void Start() {
+        if (mainVCam)
+            WatchMainCam();
         Debug.Log("Total boids: " + Boid.population.Count);
     }
 
@@ -39,5 +43,27 @@ public class BoidSpawner : MonoBehaviour {
 
     public void SpawnBoidsJobs(int number) {
         Debug.Log("Job system ain't ready yet!");
+    }
+
+    public void ToggleCam() {
+        if (mainVCam.gameObject.activeInHierarchy)
+            WatchFishCam();
+        else
+            WatchMainCam();
+    }
+
+    public void WatchMainCam() {
+        mainVCam.gameObject.SetActive(true);
+        fishVCam.gameObject.SetActive(false);
+    }
+
+    public void WatchFishCam() {
+        if (fishVCam) {
+            mainVCam.gameObject.SetActive(false);
+            fishVCam.gameObject.SetActive(true);
+            Boid followBoid = FindObjectOfType<Boid>();
+            fishVCam.Follow = followBoid.transform;
+            fishVCam.LookAt = followBoid.transform;
+        }
     }
 }

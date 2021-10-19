@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: BoidSettings
   m_EditorClassIdentifier: 
   mass: 1
-  speed: 2.1
-  perceptionRange: 0.25
-  separationStrength: 5
+  speed: 4.1
+  perceptionRange: 0.4
+  separationStrength: 1
   alignmentStrength: 1
   cohesionStrength: 1
+  moveFwd: 1
   boundsOn: 1

@@ -9,8 +9,10 @@ public class BoidSettings : ScriptableObject {
     public bool spawnUsingJobSystem = false;
     [Range(0, 5f)]
     public float mass = 1;
-    [Range(0, 10f)]
+    [Range(0, 8)]
     public float speed = 3;
+    [Range(1, 9f)]
+    public float maxSpeed = 5;
     [Range(0, 1f)]
     public float perceptionRange = 0.5f;
     [Range(0, 2f)]

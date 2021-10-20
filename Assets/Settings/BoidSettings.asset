@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: BoidSettings
   m_EditorClassIdentifier: 
   totalBoids: 250
+  spawnUsingJobSystem: 0
   mass: 1
   speed: 3
+  maxSpeed: 5
   perceptionRange: 0.5
-  separationStrength: 0.4
-  alignmentStrength: 1
-  cohesionStrength: 1
+  separationStrength: 0.2
+  alignmentStrength: 0
+  cohesionStrength: 0
   moveFwd: 1
   boundsOn: 1

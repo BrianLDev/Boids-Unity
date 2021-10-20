@@ -11,8 +11,8 @@ public class Boid : MonoBehaviour {
     private Quaternion targetRotation;
     private Vector3 velocity, acceleration, separationForce, alignmentForce, cohesionForce;
     // variables for FindNeighbors made global to minimize garbage collection
-    private Dictionary<Boid, (Vector3, float)> neighbors;  // stores Boid as dictionary key and value = a tuple of Vector3 vectorBetween, float of squared distance for fast lookup
-    private Vector3 vectorBetween;
+    private Dictionary<Boid, (Vector3, Vector3, float)> neighbors;  // Key=Boid, Values=(velocityOther, vectorBetween, sqrMagnitude distance)
+    private Vector3 vectorBetween, velocityOther, targetVector;
     private float sqrPerceptionRange, sqrMagnitudeTemp; 
 
 
@@ -38,7 +38,7 @@ public class Boid : MonoBehaviour {
         Flocking(); // handles Separation, Alignment, Cohesion forces
         Move(); // handles movement (shocker!) except for boundary turning which is handled below
         TurnAtBounds(); // makes sure boids turn back when they reach bounds
-        ResetForces(); // set all forces to 0 since intertial bodies continue at same speed unless a force acts on them
+        ResetForces(); // reset all forces to 0 since intertial bodies continue at same velocity unless a force acts on them
     }
 
     private void ApplyForce(Vector3 force) {
@@ -48,6 +48,8 @@ public class Boid : MonoBehaviour {
 
     private void ResetForces() {
         acceleration = separationForce = alignmentForce = cohesionForce = Vector3.zero;
+        if (boidSettings.speed > boidSettings.maxSpeed - 1f)
+            boidSettings.speed = boidSettings.maxSpeed - 1f;
     }
 
     private void Move() {
@@ -71,76 +73,87 @@ public class Boid : MonoBehaviour {
     }
 
     private void Flocking() {
-        FindNeighbors();
+        FindNeighbors();    // do once and store data used for all 3 methods in a dictionary for efficiency and speed
+
         Separation();
         Alignment();
         Cohesion();
+
+        ApplyForce(separationForce);
+        ApplyForce(alignmentForce);
+        ApplyForce(cohesionForce);
     }
 
     private void FindNeighbors() {
         if (neighbors == null)
-            neighbors = new Dictionary<Boid, (Vector3, float)>();
+            neighbors = new Dictionary<Boid, (Vector3, Vector3, float)>();
         else
             neighbors.Clear();
 
         // sqrMagnitude is a bit faster than Magnitude since it doesn't require sqrt function
         sqrPerceptionRange = boidSettings.perceptionRange * boidSettings.perceptionRange;
-        vectorBetween = Vector3.zero;
+        // reset values before looping through neighbors
+        velocityOther = vectorBetween = Vector3.zero;
         sqrMagnitudeTemp = 0f;
         foreach (Boid other in population) {
+            velocityOther = other.velocity;
             vectorBetween = other.transform.position - transform.position;
             sqrMagnitudeTemp = vectorBetween.sqrMagnitude;
             if (sqrMagnitudeTemp < sqrPerceptionRange) {
                 if (other != this) {    // skip self
                     // store the neighbor Boid as dictionary key, with value = a tuple of Vector3 vectorBetween, float of the distance squared for super fast lookups.
-                    neighbors.Add(other, (vectorBetween, sqrMagnitudeTemp));
+                    neighbors.Add(other, (velocityOther, vectorBetween, sqrMagnitudeTemp));
                 }
             }
         }
     }
 
-    // Separation = Steer to avoid crowding local flockmates
+    // SEPARATION (aka avoidance) = Steer to avoid crowding local flockmates
     private void Separation() {
         if (boidSettings.separationStrength > 0) {
             if (neighbors == null || neighbors.Count <= 0) {
                 return;
             } 
             else {
-                foreach (KeyValuePair<Boid, (Vector3, float)> item in neighbors) {
-                    // get the vector between self/other (Item1), then multiply by inverse squared magnitude of distance (Item2), then flip the sign from positive to negative (avoid instead of seek)
-                    separationForce -= (item.Value.Item1 * 1/item.Value.Item2);
+                foreach (KeyValuePair<Boid, (Vector3, Vector3, float)> item in neighbors) {
+                    // get the vector between self/other (Item2), then multiply by inverse squared magnitude of distance (Item3), then flip the sign from positive to negative (avoid instead of seek)
+                    separationForce -= (item.Value.Item2 * 1/item.Value.Item3);
                 }
                 separationForce /= neighbors.Count; // get avg separationForce
-                separationForce *= boidSettings.separationStrength;
-                ApplyForce(separationForce);
-                // Debug.Log("Separation Force " + separationForce);   
+                separationForce *= boidSettings.separationStrength; 
             }
         }
     }
 
-    // Alignment = Steer towards the average heading of local flockmates
+    // ALIGNMENT (aka copy) = Steer towards the average heading of local flockmates
     private void Alignment() {
         if (boidSettings.alignmentStrength > 0) {
             if (neighbors == null || neighbors.Count <= 0) {
                 return;
             }
             else {
-                foreach (KeyValuePair<Boid, (Vector3, float)> item in neighbors) {
-                    // TODO: CODE THIS
+                foreach (KeyValuePair<Boid, (Vector3, Vector3, float)> item in neighbors) {
+                    alignmentForce += item.Value.Item1; // sum all neighbor vectors
                 }
+                alignmentForce /= neighbors.Count;    // shrink to avg length/speed
+                alignmentForce = alignmentForce.normalized;
+                alignmentForce *= boidSettings.maxSpeed;
+                alignmentForce -= velocity; // get vector between target and current velocity
+                alignmentForce *= boidSettings.alignmentStrength;
             }
         }
     }
 
-    // Cohesion = Steer to move toward the average position of local flockmates
+    // COHESION (aka center) = Steer to move toward the central position of local flockmates
     private void Cohesion() {
         if (boidSettings.cohesionStrength > 0) {
             if (neighbors == null || neighbors.Count <= 0) {
                 return;
-            }
+            } 
             else {
-                foreach (KeyValuePair<Boid, (Vector3, float)> item in neighbors) {
+                foreach (KeyValuePair<Boid, (Vector3, Vector3, float)> item in neighbors) {
                     // TODO: CODE THIS
+
                 }
             }
         }

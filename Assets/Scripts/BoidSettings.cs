@@ -14,9 +14,11 @@ public class BoidSettings : ScriptableObject {
     [Range(1, 9f)]
     public float maxSpeed = 5;
     [Range(0, 1f)]
+    public float maxForce = 0.1f;
+    [Range(0, 2f)]
     public float perceptionRange = 0.5f;
     [Range(0, 2f)]
-    public float separationStrength = 0.3f;
+    public float separationStrength = 0.2f;
     [Range(0, 2f)]
     public float alignmentStrength = 1f;
     [Range(0, 2f)]

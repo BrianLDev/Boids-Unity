@@ -13,7 +13,7 @@ public class Boid : MonoBehaviour {
     // variables for FindNeighbors made global to minimize garbage collection
     private Dictionary<Boid, (Vector3, Vector3, float)> neighbors;  // Key=Boid, Values=(velocityOther, vectorBetween, sqrMagnitude distance)
     private Vector3 vectorBetween, velocityOther, targetVector;
-    private float sqrPerceptionRange, sqrMagnitudeTemp, maxForce; 
+    private float sqrPerceptionRange, sqrMagnitudeTemp; 
 
 
     private void Awake() {
@@ -50,7 +50,6 @@ public class Boid : MonoBehaviour {
         acceleration = separationForce = alignmentForce = cohesionForce = Vector3.zero;
         if (boidSettings.speed > boidSettings.maxSpeed - 1f)
             boidSettings.speed = boidSettings.maxSpeed - 1f;
-        maxForce = boidSettings.speed + 1;
     }
 
     private void Move() {
@@ -122,7 +121,7 @@ public class Boid : MonoBehaviour {
                 }
                 separationForce /= neighbors.Count; // get avg separationForce
                 separationForce *= boidSettings.separationStrength;
-                separationForce = Vector3.ClampMagnitude(separationForce, maxForce);
+                separationForce = Vector3.ClampMagnitude(separationForce, boidSettings.maxForce);
             }
         }
     }
@@ -137,15 +136,13 @@ public class Boid : MonoBehaviour {
                 foreach (KeyValuePair<Boid, (Vector3, Vector3, float)> item in neighbors) {
                     alignmentForce += item.Value.Item1; // sum all neighbor vectors
                 }
-                alignmentForce /= neighbors.Count;    // shrink to avg length/speed
-                alignmentForce = alignmentForce.normalized;
-                alignmentForce *= boidSettings.maxSpeed;
-                alignmentForce = velocity - alignmentForce; // get vector between target and current velocity
+                alignmentForce = alignmentForce.normalized * boidSettings.speed;
+                alignmentForce -= velocity;
+                // alignmentForce *= boidSettings.speed;
                 alignmentForce *= boidSettings.alignmentStrength;
-                alignmentForce = Vector3.ClampMagnitude(alignmentForce, boidSettings.speed + 1);
-                Debug.Log("Alignment Force = " + alignmentForce);
-                // Debug.DrawLine(transform.position, transform.position + alignmentForce, Color.red, 1f, false);
-                // Debug.DrawRay(transform.position, transform.position + alignmentForce, Color.red, 1f, false);
+                alignmentForce = Vector3.ClampMagnitude(alignmentForce, boidSettings.maxForce);
+                Debug.DrawRay(transform.position, transform.position + alignmentForce);
+                // Debug.Log("Alignment Force = " + alignmentForce);
             }
         }
     }

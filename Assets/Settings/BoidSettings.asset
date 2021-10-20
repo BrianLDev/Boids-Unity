@@ -15,10 +15,10 @@ MonoBehaviour:
   totalBoids: 250
   spawnUsingJobSystem: 0
   mass: 1
-  speed: 3
+  speed: 2
   maxSpeed: 5
-  perceptionRange: 0.5
-  separationStrength: 0.2
+  perceptionRange: 0.4
+  separationStrength: 0.1
   alignmentStrength: 0
   cohesionStrength: 0
   moveFwd: 1

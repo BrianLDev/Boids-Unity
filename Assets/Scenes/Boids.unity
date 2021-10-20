@@ -390,8 +390,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 574863797}
-  m_LocalRotation: {x: 0.20729505, y: 0.00061779906, z: -0.00012159664, w: 0.97827834}
-  m_LocalPosition: {x: 0.0794429, y: 3.9205065, z: -6.975622}
+  m_LocalRotation: {x: 0.07821256, y: -0.020303734, z: 0.0016105167, w: 0.99672866}
+  m_LocalPosition: {x: -0.0857954, y: 4.7153683, z: -8.466318}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1139304802}
@@ -918,7 +918,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boidSettings: {fileID: 11400000, guid: 2f4444e8f5258415f8ca577b1b334bf8, type: 2}
-  useJobSystem: 0
   spawnLocation: {fileID: 1471030920}
   fishPrefab: {fileID: 2473342046969211040, guid: fc3045cc7d8bf4673a48d6a0da3e648e, type: 3}
   mainVCam: {fileID: 1699889525}
@@ -965,7 +964,7 @@ Transform:
   m_GameObject: {fileID: 1471030919}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 15, y: 15, z: 15}
   m_Children: []
   m_Father: {fileID: 764267690}
   m_RootOrder: 1
@@ -1056,8 +1055,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1699889523}
-  m_LocalRotation: {x: 0.20729505, y: 0.00061779906, z: -0.00012159664, w: 0.97827834}
-  m_LocalPosition: {x: 0.0794429, y: 3.9205065, z: -6.975622}
+  m_LocalRotation: {x: 0.07821256, y: -0.020303734, z: 0.0016105167, w: 0.99672866}
+  m_LocalPosition: {x: -0.0857954, y: 4.7153683, z: -8.466318}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2067420862}

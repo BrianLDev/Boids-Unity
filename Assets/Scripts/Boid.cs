@@ -11,7 +11,7 @@ public class Boid : MonoBehaviour {
     private Quaternion targetRotation;
     private Vector3 velocity, acceleration, separationForce, alignmentForce, cohesionForce;
     // variables for FindNeighbors made global to minimize garbage collection
-    private Dictionary<Boid, (Vector3, Vector3, float)> neighbors;  // Key=Boid, Values=(velocityOther, vectorBetween, sqrMagnitude distance)
+    private Dictionary<Boid, (Vector3, Vector3, Vector3, float)> neighbors;  // Key=Boid, Values=(position, velocityOther, vectorBetween, sqrMagnitude distance)
     private Vector3 vectorBetween, velocityOther, targetVector;
     private float sqrPerceptionRange, sqrMagnitudeTemp; 
 
@@ -90,7 +90,7 @@ public class Boid : MonoBehaviour {
 
     private void FindNeighbors() {
         if (neighbors == null)
-            neighbors = new Dictionary<Boid, (Vector3, Vector3, float)>();
+            neighbors = new Dictionary<Boid, (Vector3, Vector3, Vector3, float)>();
         else
             neighbors.Clear();
 
@@ -106,7 +106,7 @@ public class Boid : MonoBehaviour {
             if (sqrMagnitudeTemp < sqrPerceptionRange) {
                 if (other != this) {    // skip self
                     // store the neighbor Boid as dictionary key, with value = a tuple of Vector3 vectorBetween, float of the distance squared for super fast lookups.
-                    neighbors.Add(other, (velocityOther, vectorBetween, sqrMagnitudeTemp));
+                    neighbors.Add(other, (other.transform.position, velocityOther, vectorBetween, sqrMagnitudeTemp));
                 }
             }
         }
@@ -119,16 +119,15 @@ public class Boid : MonoBehaviour {
                 return;
             } 
             else {
-                foreach (KeyValuePair<Boid, (Vector3, Vector3, float)> item in neighbors) {
+                foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors) {
                     // adjust range depending on strength
-                    if (item.Value.Item3 < boidSettings.perceptionRange * boidSettings.separationStrength) {
-                        // get the vector between self/other (Item2), then divide by the distance (Item3), then flip the sign from positive to negative (avoid instead of seek)
-                        separationForce -= item.Value.Item2;
+                    if (item.Value.Item4 < boidSettings.perceptionRange * boidSettings.separationStrength) {
+                        separationForce -= item.Value.Item3;
                     }
                 }
-                separationForce = separationForce.normalized * boidSettings.speed;
+                // separationForce = separationForce.normalized * boidSettings.speed;   // removed - slowed things down and not needed
                 separationForce *= boidSettings.separationStrength;
-                separationForce = Vector3.ClampMagnitude(separationForce, boidSettings.maxForce / 4);   // clamp separation stronger than other 2 methods to avoid jitter
+                separationForce = Vector3.ClampMagnitude(separationForce, boidSettings.maxForce / 4);   // clamp separation to be much weaker than other 2 methods to avoid jitter
                 if (boidSettings.drawDebugLines)
                     Debug.DrawLine(transform.position, transform.position + separationForce, Color.red);
             }
@@ -142,10 +141,10 @@ public class Boid : MonoBehaviour {
                 return;
             }
             else {
-                foreach (KeyValuePair<Boid, (Vector3, Vector3, float)> item in neighbors) {
-                    alignmentForce += item.Value.Item1; // sum all neighbor vectors
+                foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors) {
+                    alignmentForce += item.Value.Item2; // sum all neighbor vectors
                 }
-                alignmentForce = alignmentForce.normalized * boidSettings.speed;
+                // alignmentForce = alignmentForce.normalized * boidSettings.speed; // removed - slowed things down and not needed
                 alignmentForce -= velocity;
                 alignmentForce *= boidSettings.alignmentStrength;
                 alignmentForce = Vector3.ClampMagnitude(alignmentForce, boidSettings.maxForce);
@@ -162,10 +161,17 @@ public class Boid : MonoBehaviour {
                 return;
             } 
             else {
-                foreach (KeyValuePair<Boid, (Vector3, Vector3, float)> item in neighbors) {
-                    // TODO: CODE THIS
-
+                foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors) {
+                    cohesionForce += item.Value.Item1; // sum all neighbor positions
                 }
+                cohesionForce /= neighbors.Count;   // get average position (center)
+                cohesionForce -= transform.position; // convert to a vector pointing from boid to center
+                cohesionForce -= velocity;  // convert to a steering vector to turn towards the vector pointing at center
+                // cohesionForce = cohesionForce.normalized * boidSettings.speed;   // removed - slowed things down and not needed
+                cohesionForce *= boidSettings.cohesionStrength;
+                cohesionForce = Vector3.ClampMagnitude(cohesionForce, boidSettings.maxForce);
+                if (boidSettings.drawDebugLines)
+                    Debug.DrawLine(transform.position, transform.position + cohesionForce, Color.blue);
             }
         }
     }

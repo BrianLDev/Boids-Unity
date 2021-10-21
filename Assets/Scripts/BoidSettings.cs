@@ -25,4 +25,5 @@ public class BoidSettings : ScriptableObject {
     public float cohesionStrength = 1f;
     public bool moveFwd = true;
     public bool boundsOn = true;
+    public bool drawDebugLines = false;
 }

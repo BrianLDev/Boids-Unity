@@ -55,10 +55,14 @@ public class Boid : MonoBehaviour {
     private void Move() {
         velocity = Vector3.zero;    // reset velocity
         if (boidSettings.moveFwd)
-            velocity = transform.forward * boidSettings.speed;  // add forward movement
-        velocity += acceleration * boidSettings.speed;  // add acceleration
+            velocity = transform.forward * boidSettings.speed;  // add forward movement if box checked
+        // acceleration
+        acceleration = Vector3.ClampMagnitude(acceleration, boidSettings.maxForce);
+        velocity += acceleration;
+        // move position and rotation
+        transform.position += velocity * Time.fixedDeltaTime;
+        transform.position = Vector3.Lerp(transform.position, transform.position + velocity, Time.fixedDeltaTime);
         transform.rotation = Quaternion.LookRotation(velocity);
-        transform.position += velocity * Time.fixedDeltaTime;   // move position
     }
 
     private void TurnAtBounds() {
@@ -116,12 +120,17 @@ public class Boid : MonoBehaviour {
             } 
             else {
                 foreach (KeyValuePair<Boid, (Vector3, Vector3, float)> item in neighbors) {
-                    // get the vector between self/other (Item2), then multiply by inverse squared magnitude of distance (Item3), then flip the sign from positive to negative (avoid instead of seek)
-                    separationForce -= (item.Value.Item2 * 1/item.Value.Item3);
+                    // adjust range depending on strength
+                    if (item.Value.Item3 < boidSettings.perceptionRange * boidSettings.separationStrength) {
+                        // get the vector between self/other (Item2), then divide by the distance (Item3), then flip the sign from positive to negative (avoid instead of seek)
+                        separationForce -= item.Value.Item2;
+                    }
                 }
-                separationForce /= neighbors.Count; // get avg separationForce
+                separationForce = separationForce.normalized * boidSettings.speed;
                 separationForce *= boidSettings.separationStrength;
-                separationForce = Vector3.ClampMagnitude(separationForce, boidSettings.maxForce);
+                separationForce = Vector3.ClampMagnitude(separationForce, boidSettings.maxForce / 4);   // clamp separation stronger than other 2 methods to avoid jitter
+                if (boidSettings.drawDebugLines)
+                    Debug.DrawLine(transform.position, transform.position + separationForce, Color.red);
             }
         }
     }
@@ -138,11 +147,10 @@ public class Boid : MonoBehaviour {
                 }
                 alignmentForce = alignmentForce.normalized * boidSettings.speed;
                 alignmentForce -= velocity;
-                // alignmentForce *= boidSettings.speed;
                 alignmentForce *= boidSettings.alignmentStrength;
                 alignmentForce = Vector3.ClampMagnitude(alignmentForce, boidSettings.maxForce);
-                Debug.DrawRay(transform.position, transform.position + alignmentForce);
-                // Debug.Log("Alignment Force = " + alignmentForce);
+                if (boidSettings.drawDebugLines)
+                    Debug.DrawLine(transform.position, transform.position + alignmentForce, Color.green);
             }
         }
     }

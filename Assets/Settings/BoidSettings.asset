@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57ddf2c09ee1945048d82146369d9110, type: 3}
   m_Name: BoidSettings
   m_EditorClassIdentifier: 
-  totalBoids: 225
+  totalBoids: 200
   spawnUsingJobSystem: 0
   mass: 1
-  speed: 2
+  speed: 1.5
   maxForce: 0.2
   perceptionRange: 1
-  separationStrength: 0.4
+  separationStrength: 0.2
   alignmentStrength: 0.4
   cohesionStrength: 0.4
   moveFwd: 1

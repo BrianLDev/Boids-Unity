@@ -11,8 +11,6 @@ public class BoidSettings : ScriptableObject {
     public float mass = 1;
     [Range(0, 8)]
     public float speed = 3;
-    [Range(1, 9f)]
-    public float maxSpeed = 5;
     [Range(0, 1f)]
     public float maxForce = 0.1f;
     [Range(0, 2f)]

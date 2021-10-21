@@ -48,8 +48,6 @@ public class Boid : MonoBehaviour {
 
     private void ResetForces() {
         acceleration = separationForce = alignmentForce = cohesionForce = Vector3.zero;
-        if (boidSettings.speed > boidSettings.maxSpeed - 1f)
-            boidSettings.speed = boidSettings.maxSpeed - 1f;
     }
 
     private void Move() {
@@ -127,7 +125,7 @@ public class Boid : MonoBehaviour {
                 }
                 // separationForce = separationForce.normalized * boidSettings.speed;   // removed - slowed things down and not needed
                 separationForce *= boidSettings.separationStrength;
-                separationForce = Vector3.ClampMagnitude(separationForce, boidSettings.maxForce / 4);   // clamp separation to be much weaker than other 2 methods to avoid jitter
+                separationForce = Vector3.ClampMagnitude(separationForce, boidSettings.maxForce / 2);   // clamp separation to be much weaker than other 2 methods to avoid jitter
                 if (boidSettings.drawDebugLines)
                     Debug.DrawLine(transform.position, transform.position + separationForce, Color.red);
             }

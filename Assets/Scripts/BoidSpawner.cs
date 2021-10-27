@@ -6,7 +6,6 @@ using UnityEngine;
 public class BoidSpawner : MonoBehaviour {
     [SerializeField] private BoidSettings boidSettings;
     [SerializeField] private Transform spawnLocation;
-    [SerializeField] private GameObject fishPrefab;
     [SerializeField] private CinemachineVirtualCamera mainVCam;
     [SerializeField] private CinemachineVirtualCamera fishVCam;
     private float boundaryRadius = 10;
@@ -37,13 +36,18 @@ public class BoidSpawner : MonoBehaviour {
         Boid newBoid;
         for (int i=0; i<boidSettings.totalBoids; i++) {
             boidLocation = Random.insideUnitSphere.normalized * Random.Range(0, boundaryRadius * 0.9f);
-            newBoid = Instantiate(fishPrefab, boidLocation, Quaternion.identity, this.transform).GetComponent<Boid>();
+            newBoid = Instantiate(boidSettings.boidPrefab, boidLocation, Quaternion.identity, this.transform).GetComponent<Boid>();
             newBoid.SetBoundarySphere(spawnLocation.position, boundaryRadius);
         }
     }
 
     public void SpawnBoidsJobs(int number) {
-        Debug.Log("Job system ain't ready yet!");
+        BoidJobs newBoidJobs;
+        for (int i=0; i<boidSettings.totalBoids; i++) {
+            boidLocation = Random.insideUnitSphere.normalized * Random.Range(0, boundaryRadius * 0.9f);
+            newBoidJobs = Instantiate(boidSettings.boidPrefab, boidLocation, Quaternion.identity, this.transform).GetComponent<BoidJobs>();
+            newBoidJobs.SetBoundarySphere(spawnLocation.position, boundaryRadius);
+        }    
     }
 
     public void ToggleCam() {

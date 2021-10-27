@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalBoids: 225
   spawnUsingJobSystem: 0
+  boidPrefab: {fileID: 2473342046969211040, guid: fc3045cc7d8bf4673a48d6a0da3e648e, type: 3}
   mass: 1
   speed: 2
   maxForce: 0.2
   perceptionRange: 1
-  separationStrength: 0.4
+  separationStrength: 0.2
   alignmentStrength: 0.4
   cohesionStrength: 0.4
   moveFwd: 1

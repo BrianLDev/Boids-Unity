@@ -5,8 +5,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "BoidSettings", menuName = "ScriptableObjects/BoidSettings", order = 1)]
 public class BoidSettings : ScriptableObject {
     public int totalBoids = 250;
-    [Tooltip("Must check or uncheck this before pressing Play in Unity Editor")]
+    [Tooltip("Must check or uncheck this BEFORE pressing Play in Unity Editor")]
     public bool spawnUsingJobSystem = false;
+    [Tooltip("Game Object for boid including 3d model, animations, etc")]
+    public GameObject boidPrefab;
     [Range(0.1f, 5f)]
     public float mass = 1;
     [Range(0, 8)]

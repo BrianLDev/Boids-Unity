@@ -71,4 +71,5 @@ public class BoidSpawner : MonoBehaviour {
             fishVCam.LookAt = followBoid.transform;
         }
     }
+
 }

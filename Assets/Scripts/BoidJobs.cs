@@ -19,13 +19,17 @@ public class BoidJobs : MonoBehaviour {
     // variables for FindNeighbors made global to minimize garbage collection
     private Dictionary<BoidJobs, (Vector3, Vector3, Vector3, float)> neighbors;  // Key=BoidJobs, Values=(position, velocityOther, vectorBetween, sqrMagnitude distance)
     private Vector3 vectorBetween, velocityOther, targetVector;
-    private float sqrPerceptionRange, sqrMagnitudeTemp; 
+    private float sqrPerceptionRange, sqrMagnitudeTemp;
+    // Jobs related variables
+    private TransformAccessArray transformAccessArray;
 
 
     private void Awake() {
         if (population == null)
             population = new List<BoidJobs>();
         population.Add(this);
+        // Initialize transformAccessArray with size amountOfFish.
+        transformAccessArray = new TransformAccessArray(boidSettings.totalBoids);
         Initialize();
     }
 

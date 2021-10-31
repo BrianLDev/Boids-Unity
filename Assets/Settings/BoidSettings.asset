@@ -17,11 +17,11 @@ MonoBehaviour:
   boidPrefab: {fileID: 2473342046969211040, guid: fc3045cc7d8bf4673a48d6a0da3e648e, type: 3}
   mass: 1
   speed: 2
-  maxForce: 0.2
-  perceptionRange: 1
-  separationStrength: 0.2
-  alignmentStrength: 0.4
-  cohesionStrength: 0.4
+  maxForce: 0.5
+  perceptionRange: 0.6
+  separationStrength: 0.3
+  alignmentStrength: 0.5
+  cohesionStrength: 0.5
   moveFwd: 1
   boundsOn: 1
   drawDebugLines: 0

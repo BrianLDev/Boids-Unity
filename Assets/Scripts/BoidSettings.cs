@@ -12,17 +12,17 @@ public class BoidSettings : ScriptableObject {
     [Range(0.1f, 5f)]
     public float mass = 1;
     [Range(0, 8)]
-    public float speed = 3;
+    public float speed = 2;
     [Range(0, 1f)]
-    public float maxForce = 0.1f;
+    public float maxForce = 0.5f;
     [Range(0, 2f)]
-    public float perceptionRange = 0.5f;
+    public float perceptionRange = 0.6f;
     [Range(0, 1f)]
-    public float separationStrength = 0.2f;
+    public float separationStrength = 0.3f;
     [Range(0, 1f)]
-    public float alignmentStrength = 1f;
+    public float alignmentStrength = 0.5f;
     [Range(0, 1f)]
-    public float cohesionStrength = 1f;
+    public float cohesionStrength = 0.5f;
     public bool moveFwd = true;
     public bool boundsOn = true;
     public bool drawDebugLines = false;
@@ -45,7 +45,26 @@ public class BoidSettings : ScriptableObject {
     public void ChangeCohesion(float cohesn) {
         cohesionStrength = Mathf.Clamp(cohesn, 0, 1);
     }
+    public void ResetSettings() {
+        // NOTE - THIS RESETS THE ACTUAL VALUES BUT NOT THE UI SLIDERS.  NOT WORTH TIME/EFFORT TO CONNECT EVERYTHING TO UI.
+        mass = 1;
+        speed = 2;
+        maxForce = 0.5f;
+        perceptionRange = 0.6f;
+        separationStrength = 0.3f;
+        alignmentStrength = 0.5f;
+        cohesionStrength = 0.5f;
+        moveFwd = true;
+        boundsOn = true;
+        drawDebugLines = false;
+    }
     public void ToggleDebugLines() {
         drawDebugLines = !drawDebugLines;
     }
+    public void ToggleBounds() {
+        boundsOn = !boundsOn;
+    }
+
+    // NOTE - TOGGLECAM METHOD IS ON THE BOIDSPAWNER SCRIPT
+
 }

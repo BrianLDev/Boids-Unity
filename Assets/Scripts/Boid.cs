@@ -120,7 +120,7 @@ public class Boid : MonoBehaviour {
                 foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors) {
                     // adjust range depending on strength
                     if (item.Value.Item4 < boidSettings.perceptionRange * boidSettings.separationStrength) {
-                        separationForce -= item.Value.Item3;
+                        separationForce -= item.Value.Item3;    // Item3 = vectorBetween
                     }
                 }
                 // separationForce = separationForce.normalized * boidSettings.speed;   // removed - slowed things down and not needed
@@ -140,10 +140,10 @@ public class Boid : MonoBehaviour {
             }
             else {
                 foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors) {
-                    alignmentForce += item.Value.Item2; // sum all neighbor vectors
+                    alignmentForce += item.Value.Item2; // sum all neighbor velocities (Item2 = velocity)
                 }
                 // alignmentForce = alignmentForce.normalized * boidSettings.speed; // removed - slowed things down and not needed
-                alignmentForce -= velocity;
+                alignmentForce /= neighbors.Count;
                 alignmentForce *= boidSettings.alignmentStrength;
                 alignmentForce = Vector3.ClampMagnitude(alignmentForce, boidSettings.maxForce);
                 if (boidSettings.drawDebugLines)
@@ -160,11 +160,10 @@ public class Boid : MonoBehaviour {
             } 
             else {
                 foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors) {
-                    cohesionForce += item.Value.Item1; // sum all neighbor positions
+                    cohesionForce += item.Value.Item1; // sum all neighbor positions (Item1 = position)
                 }
                 cohesionForce /= neighbors.Count;   // get average position (center)
                 cohesionForce -= transform.position; // convert to a vector pointing from boid to center
-                cohesionForce -= velocity;  // convert to a steering vector to turn towards the vector pointing at center
                 // cohesionForce = cohesionForce.normalized * boidSettings.speed;   // removed - slowed things down and not needed
                 cohesionForce *= boidSettings.cohesionStrength;
                 cohesionForce = Vector3.ClampMagnitude(cohesionForce, boidSettings.maxForce);

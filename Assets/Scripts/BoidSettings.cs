@@ -16,11 +16,11 @@ public class BoidSettings : ScriptableObject {
     [Range(0, 1f)]
     public float maxForce = 0.5f;
     [Range(0, 2f)]
-    public float perceptionRange = 0.6f;
+    public float perceptionRange = 0.8f;
     [Range(0, 1f)]
     public float separationStrength = 0.3f;
     [Range(0, 1f)]
-    public float alignmentStrength = 0.5f;
+    public float alignmentStrength = 0.3f;
     [Range(0, 1f)]
     public float cohesionStrength = 0.5f;
     public bool moveFwd = true;
@@ -50,9 +50,9 @@ public class BoidSettings : ScriptableObject {
         mass = 1;
         speed = 2;
         maxForce = 0.5f;
-        perceptionRange = 0.6f;
+        perceptionRange = 0.8f;
         separationStrength = 0.3f;
-        alignmentStrength = 0.5f;
+        alignmentStrength = 0.3f;
         cohesionStrength = 0.5f;
         moveFwd = true;
         boundsOn = true;

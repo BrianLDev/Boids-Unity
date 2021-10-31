@@ -18,9 +18,9 @@ MonoBehaviour:
   mass: 1
   speed: 2
   maxForce: 0.5
-  perceptionRange: 0.6
+  perceptionRange: 0.8
   separationStrength: 0.3
-  alignmentStrength: 0.5
+  alignmentStrength: 0.3
   cohesionStrength: 0.5
   moveFwd: 1
   boundsOn: 1

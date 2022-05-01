@@ -4,28 +4,29 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "BoidSettings", menuName = "ScriptableObjects/BoidSettings", order = 1)]
 public class BoidSettings : ScriptableObject {
-    public int totalBoids = 250;
-    [Tooltip("Must check or uncheck this BEFORE pressing Play in Unity Editor")]
-    public bool spawnUsingJobSystem = false;
+    public int totalBoids = 200;
+    // [Tooltip("Must check or uncheck this BEFORE pressing Play in Unity Editor")]
+    // public bool useJobSystem = false;
     [Tooltip("Game Object for boid including 3d model, animations, etc")]
     public GameObject boidPrefab;
-    [Range(0.1f, 5f)]
-    public float mass = 1;
-    [Range(0, 8)]
-    public float speed = 2;
-    [Range(0, 1f)]
-    public float maxForce = 0.5f;
-    [Range(0, 2f)]
-    public float perceptionRange = 0.8f;
     [Range(0, 1f)]
     public float separationStrength = 0.3f;
     [Range(0, 1f)]
     public float alignmentStrength = 0.3f;
     [Range(0, 1f)]
     public float cohesionStrength = 0.5f;
+    [Range(0.1f, 5f)]
+    public float mass = 1;
+    [Range(0, 3)]
+    public float speed = 1f;
+    [Range(0, 1f)]
+    public float maxForce = 0.5f;
+    [Range(0, 2f)]
+    public float perceptionRange = 0.8f;
     public bool moveFwd = true;
     public bool boundsOn = true;
     public bool drawDebugLines = false;
+    private GameObject bounds;
 
     public void ChangeSpeed(float spd) {
         speed = Mathf.Clamp(spd, 0, 8);
@@ -47,13 +48,13 @@ public class BoidSettings : ScriptableObject {
     }
     public void ResetSettings() {
         // NOTE - THIS RESETS THE ACTUAL VALUES BUT NOT THE UI SLIDERS.  NOT WORTH TIME/EFFORT TO CONNECT EVERYTHING TO UI.
+        separationStrength = 0.5f;
+        alignmentStrength = 0.5f;
+        cohesionStrength = 0.3f;
         mass = 1;
-        speed = 2;
-        maxForce = 0.5f;
-        perceptionRange = 0.8f;
-        separationStrength = 0.3f;
-        alignmentStrength = 0.3f;
-        cohesionStrength = 0.5f;
+        speed = 1;
+        maxForce = 0.25f;
+        perceptionRange = 0.75f;
         moveFwd = true;
         boundsOn = true;
         drawDebugLines = false;
@@ -63,6 +64,9 @@ public class BoidSettings : ScriptableObject {
     }
     public void ToggleBounds() {
         boundsOn = !boundsOn;
+        if (!bounds)
+          bounds = GameObject.Find("Bounds");
+        bounds.SetActive(boundsOn);
     }
 
     // NOTE - TOGGLECAM METHOD IS ON THE BOIDSPAWNER SCRIPT

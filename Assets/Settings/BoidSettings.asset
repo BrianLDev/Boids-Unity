@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57ddf2c09ee1945048d82146369d9110, type: 3}
   m_Name: BoidSettings
   m_EditorClassIdentifier: 
-  totalBoids: 250
+  totalBoids: 200
   spawnUsingJobSystem: 0
-  boidPrefab: {fileID: 2473342046969211040, guid: fc3045cc7d8bf4673a48d6a0da3e648e, type: 3}
+  boidPrefab: {fileID: 7147685746709287111, guid: 4af2c449c6bc54dc4be59e5bb84f7c1f, type: 3}
   mass: 1
-  speed: 1.7593994
+  speed: 2
   maxForce: 0.32706755
-  perceptionRange: 0.8451127
-  separationStrength: 0.3827068
-  alignmentStrength: 0.25488716
-  cohesionStrength: 0.25187987
+  perceptionRange: 1.1458646
+  separationStrength: 0.72105247
+  alignmentStrength: 0.5112782
+  cohesionStrength: 0.30827072
   moveFwd: 1
   boundsOn: 1
   drawDebugLines: 0

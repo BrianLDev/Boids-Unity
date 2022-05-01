@@ -14,15 +14,16 @@ public class BoidSpawner : MonoBehaviour {
     private void Awake() {
         if (!boidSettings)
             boidSettings = FindObjectOfType<BoidSettings>();
+        boidSettings.boundsOn = true;
 
         if (!spawnLocation)
             spawnLocation = this.transform;
         else
             boundaryRadius = spawnLocation.localScale.x/2;
         
-        if (boidSettings.spawnUsingJobSystem)
-            SpawnBoidsJobs(boidSettings.totalBoids);
-        else
+        // if (boidSettings.useJobSystem)
+        //     SpawnBoidsJobs(boidSettings.totalBoids);
+        // else
             SpawnBoids(boidSettings.totalBoids);
     }
 

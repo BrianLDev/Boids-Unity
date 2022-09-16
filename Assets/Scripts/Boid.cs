@@ -1,8 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Boid : MonoBehaviour {
+public class Boid : MonoBehaviour
+{
+#region Variables
     public static List<Boid> population;
 
     public BoidSettings boidSettings;
@@ -13,68 +14,80 @@ public class Boid : MonoBehaviour {
     // variables for FindNeighbors made global to minimize garbage collection
     private Dictionary<Boid, (Vector3, Vector3, Vector3, float)> neighbors;  // Key=Boid, Values=(position, velocityOther, vectorBetween, sqrMagnitude distance)
     private Vector3 vectorBetween, velocityOther, targetVector;
-    private float sqrPerceptionRange, sqrMagnitudeTemp; 
+    private float sqrPerceptionRange, sqrMagnitudeTemp;
+#endregion Variables
 
-
-    private void Awake() {
+#region Methods
+    private void Awake()
+    {
         if (population == null)
             population = new List<Boid>();
         population.Add(this);
         Initialize();
     }
 
-    public void Initialize() {
+    public void Initialize()
+    {
         transform.forward = Random.insideUnitSphere.normalized;
         velocity = transform.forward * boidSettings.speed;
-        acceleration = new Vector3(0,0,0);
+        acceleration = new Vector3(0, 0, 0);
     }
 
-    public void SetBoundarySphere(Vector3 center, float radius) {
+    public void SetBoundarySphere(Vector3 center, float radius)
+    {
         boundaryCenter = center;
         boundaryRadius = radius;
     }
 
-    private void FixedUpdate() {
+    private void Update()
+    {
         Flocking(); // handles Separation, Alignment, Cohesion forces
         Move(); // handles movement (shocker!) except for boundary turning which is handled below
         TurnAtBounds(); // makes sure boids turn back when they reach bounds
         ResetForces(); // reset all forces to 0 since intertial bodies continue at same velocity unless a force acts on them
     }
 
-    private void ApplyForce(Vector3 force) {
+    private void ApplyForce(Vector3 force)
+    {
         force /= boidSettings.mass;
         acceleration += force;
     }
 
-    private void ResetForces() {
+    private void ResetForces()
+    {
         acceleration = separationForce = alignmentForce = cohesionForce = Vector3.zero;
     }
 
-    private void Move() {
+    private void Move()
+    {
         velocity = Vector3.zero;    // reset velocity
         if (boidSettings.moveFwd)
             velocity = transform.forward * boidSettings.speed;  // add forward movement if box checked
-        // acceleration
+                                                                // acceleration
         acceleration = Vector3.ClampMagnitude(acceleration, boidSettings.maxForce);
         velocity += acceleration;
         // move position and rotation
-        transform.position += velocity * Time.fixedDeltaTime;
-        transform.position = Vector3.Lerp(transform.position, transform.position + velocity, Time.fixedDeltaTime);
+        transform.position += velocity * Time.deltaTime;
+        transform.position = Vector3.Lerp(transform.position, transform.position + velocity, Time.deltaTime);
         transform.rotation = Quaternion.LookRotation(velocity);
     }
 
-    private void TurnAtBounds() {
-        if (!boidSettings.boundsOn) {
+    private void TurnAtBounds()
+    {
+        if (!boidSettings.boundsOn)
+        {
             return;
         }
-        else if ((transform.position - boundaryCenter).sqrMagnitude > (boundaryRadius * boundaryRadius) * 0.9f) {
+        else if ((transform.position - boundaryCenter).sqrMagnitude > (boundaryRadius * boundaryRadius) * 0.9f)
+        {
             // targetRotation = Quaternion.Inverse(transform.rotation);
-            targetRotation = Quaternion.LookRotation(boundaryCenter - transform.position + Random.onUnitSphere*boundaryRadius*0.5f);
+            targetRotation = Quaternion.LookRotation(boundaryCenter - transform.position + Random.onUnitSphere * boundaryRadius * 0.5f);
         }
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * boidSettings.speed);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * boidSettings.speed);
     }
 
-    private void Flocking() {
+    private void Flocking()
+    {
         FindNeighbors();    // do once and store data used for all 3 methods in a dictionary for efficiency and speed
 
         Separation();
@@ -86,7 +99,8 @@ public class Boid : MonoBehaviour {
         ApplyForce(cohesionForce);
     }
 
-    private void FindNeighbors() {
+    private void FindNeighbors()
+    {
         if (neighbors == null)
             neighbors = new Dictionary<Boid, (Vector3, Vector3, Vector3, float)>();
         else
@@ -97,13 +111,16 @@ public class Boid : MonoBehaviour {
         // reset values before looping through neighbors
         velocityOther = vectorBetween = Vector3.zero;
         sqrMagnitudeTemp = 0f;
-        foreach (Boid other in population) {
+        foreach (Boid other in population)
+        {
             velocityOther = other.velocity;
             vectorBetween = other.transform.position - transform.position;
             sqrMagnitudeTemp = vectorBetween.sqrMagnitude;
-            if (sqrMagnitudeTemp < sqrPerceptionRange) {
-                if (other != this) {    // skip self
-                    // store the neighbor Boid as dictionary key, with value = a tuple of Vector3 vectorBetween, float of the distance squared for super fast lookups.
+            if (sqrMagnitudeTemp < sqrPerceptionRange)
+            {
+                if (other != this)
+                {    // skip self
+                     // store the neighbor Boid as dictionary key, with value = a tuple of Vector3 vectorBetween, float of the distance squared for super fast lookups.
                     neighbors.Add(other, (other.transform.position, velocityOther, vectorBetween, sqrMagnitudeTemp));
                 }
             }
@@ -111,15 +128,21 @@ public class Boid : MonoBehaviour {
     }
 
     // SEPARATION (aka avoidance) = Steer to avoid crowding local flockmates
-    private void Separation() {
-        if (boidSettings.separationStrength > 0) {
-            if (neighbors == null || neighbors.Count <= 0) {
+    private void Separation()
+    {
+        if (boidSettings.separationStrength > 0)
+        {
+            if (neighbors == null || neighbors.Count <= 0)
+            {
                 return;
-            } 
-            else {
-                foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors) {
+            }
+            else
+            {
+                foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors)
+                {
                     // adjust range depending on strength
-                    if (item.Value.Item4 < boidSettings.perceptionRange * boidSettings.separationStrength) {
+                    if (item.Value.Item4 < boidSettings.perceptionRange * boidSettings.separationStrength)
+                    {
                         separationForce -= item.Value.Item3;    // Item3 = vectorBetween
                     }
                 }
@@ -133,13 +156,18 @@ public class Boid : MonoBehaviour {
     }
 
     // ALIGNMENT (aka copy) = Steer towards the average heading of local flockmates
-    private void Alignment() {
-        if (boidSettings.alignmentStrength > 0) {
-            if (neighbors == null || neighbors.Count <= 0) {
+    private void Alignment()
+    {
+        if (boidSettings.alignmentStrength > 0)
+        {
+            if (neighbors == null || neighbors.Count <= 0)
+            {
                 return;
             }
-            else {
-                foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors) {
+            else
+            {
+                foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors)
+                {
                     alignmentForce += item.Value.Item2; // sum all neighbor velocities (Item2 = velocity)
                 }
                 // alignmentForce = alignmentForce.normalized * boidSettings.speed; // removed - slowed things down and not needed
@@ -153,18 +181,22 @@ public class Boid : MonoBehaviour {
     }
 
     // COHESION (aka center) = Steer to move toward the central position of local flockmates
-    private void Cohesion() {
-        if (boidSettings.cohesionStrength > 0) {
-            if (neighbors == null || neighbors.Count <= 0) {
+    private void Cohesion()
+    {
+        if (boidSettings.cohesionStrength > 0)
+        {
+            if (neighbors == null || neighbors.Count <= 0)
+            {
                 return;
-            } 
-            else {
-                foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors) {
+            }
+            else
+            {
+                foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors)
+                {
                     cohesionForce += item.Value.Item1; // sum all neighbor positions (Item1 = position)
                 }
                 cohesionForce /= neighbors.Count;   // get average position (center)
                 cohesionForce -= transform.position; // convert to a vector pointing from boid to center
-                // cohesionForce = cohesionForce.normalized * boidSettings.speed;   // removed - slowed things down and not needed
                 cohesionForce *= boidSettings.cohesionStrength;
                 cohesionForce = Vector3.ClampMagnitude(cohesionForce, boidSettings.maxForce);
                 if (boidSettings.drawDebugLines)
@@ -172,6 +204,6 @@ public class Boid : MonoBehaviour {
             }
         }
     }
-
+#endregion Methods
 
 }

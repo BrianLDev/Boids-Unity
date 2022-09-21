@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalBoids: 200
   boidPrefab: {fileID: 7147685746709287111, guid: 4af2c449c6bc54dc4be59e5bb84f7c1f, type: 3}
-  separationStrength: 0.4
-  alignmentStrength: 0.2
-  cohesionStrength: 0.2
+  separationStrength: 0.5
+  alignmentStrength: 0.4
+  cohesionStrength: 0.4
   mass: 1
-  speed: 1
-  maxForce: 0.15
-  perceptionRange: 0.75
+  speed: 1.3
+  maxForce: 0.3
+  perceptionRange: 0.7
   moveFwd: 1
   boundsOn: 1
   drawDebugLines: 0

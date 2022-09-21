@@ -29,6 +29,7 @@ public class BoidSpawner : MonoBehaviour
         // if (boidSettings.useJobSystem)
         //     SpawnBoidsJobs(boidSettings.totalBoids);
         // else
+        boidSettings.ResetSettings();
         SpawnBoids(boidSettings.totalBoids);
     }
 

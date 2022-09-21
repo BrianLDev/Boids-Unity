@@ -12,23 +12,31 @@ public class BoidSettings : ScriptableObject
     [Tooltip("Game Object for boid including 3d model, animations, etc")]
     public GameObject boidPrefab;
     [Range(0, 1f)]
-    public float separationStrength = 0.3f;
+    public float separationStrength;
     [Range(0, 1f)]
-    public float alignmentStrength = 0.3f;
+    public float alignmentStrength;
     [Range(0, 1f)]
-    public float cohesionStrength = 0.5f;
+    public float cohesionStrength;
     [Range(0.1f, 5f)]
-    public float mass = 1;
+    public float mass;
     [Range(0, 3)]
-    public float speed = 1f;
+    public float speed;
     [Range(0, 1f)]
-    public float maxForce = 0.5f;
+    public float maxForce;
     [Range(0, 2f)]
-    public float perceptionRange = 0.8f;
+    public float perceptionRange;
     public bool moveFwd = true;
     public bool boundsOn = true;
     public bool drawDebugLines = false;
     private GameObject bounds;
+    // initial values to be used at start and reset
+    private float initSeparStr = 0.75f;
+    private float initAlignStr = 0.4f;
+    private float initCohesStr = 0.4f;
+    private float initMass = 1;
+    private float initSpeed = 1.5f;
+    private float initMaxForce = 0.3f;
+    private float initPerceptRange = 0.7f;
 #endregion Variables
 
 #region Methods 
@@ -41,13 +49,13 @@ public class BoidSettings : ScriptableObject
     public void ResetSettings()
     {
         // NOTE - THIS RESETS THE ACTUAL VALUES BUT NOT THE UI SLIDERS.  NOT WORTH TIME/EFFORT TO CONNECT EVERYTHING TO UI.
-        separationStrength = 0.5f;
-        alignmentStrength = 0.5f;
-        cohesionStrength = 0.3f;
-        mass = 1;
-        speed = 1;
-        maxForce = 0.25f;
-        perceptionRange = 0.75f;
+        separationStrength = initSeparStr;
+        alignmentStrength = initAlignStr;
+        cohesionStrength = initCohesStr;
+        mass = initMass;
+        speed = initSpeed;
+        maxForce = initMaxForce;
+        perceptionRange = initPerceptRange;
         moveFwd = true;
         boundsOn = true;
         drawDebugLines = false;
@@ -56,6 +64,7 @@ public class BoidSettings : ScriptableObject
     {
         drawDebugLines = !drawDebugLines;
     }
+    
     public void ToggleBounds()
     {
         boundsOn = !boundsOn;

@@ -180,6 +180,13 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
+    "com.vanbassum.wakatime": {
+      "version": "https://github.com/vanBassum/Wakatime.Unity.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "43c2332997f61140a683289a3f56d0ce8fab0589"
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,

@@ -89,6 +89,6 @@ Temporary Items
 # find . -size +60MB | cat >> .gitignore	
 
 # WAKATIME PACKAGE LINK:
-# https://github.com/vladfaust/unity-wakatime.git#package
+# https://github.com/vanBassum/Wakatime.Unity.git
 
 

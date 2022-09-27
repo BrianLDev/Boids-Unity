@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6ff59fbb2b7441bc9732677e1efc538, type: 3}
+  m_Name: SfxManager
+  m_EditorClassIdentifier: 
+  sfx01: {fileID: 8300000, guid: cf5f11b3ae51449fdbad5648e69a69c9, type: 3}

@@ -11,25 +11,26 @@ public class BoidSettings : ScriptableObject
     // public bool useJobSystem = false;
     [Tooltip("Game Object for boid including 3d model, animations, etc")]
     public GameObject boidPrefab;
-    [Range(0, 1f)]
+    [Range(0.01f, 1f)]
     public float separationStrength;
-    [Range(0, 1f)]
+    [Range(0.01f, 1f)]
     public float alignmentStrength;
-    [Range(0, 1f)]
+    [Range(0.01f, 1f)]
     public float cohesionStrength;
     [Range(0.1f, 5f)]
     public float mass;
-    [Range(0, 3)]
+    [Range(0.01f, 3)]
     public float speed;
-    [Range(0, 1f)]
+    [Range(0.01f, 1f)]
     public float maxForce;
-    [Range(0, 2f)]
+    [Range(0.01f, 2f)]
     public float perceptionRange;
     public bool moveFwd = true;
     public bool boundsOn = true;
     public bool drawDebugLines = false;
     private GameObject bounds;
     // initial values to be used at start and reset
+    private int initTotalBoids = 200;
     private float initSeparStr = 0.75f;
     private float initAlignStr = 0.4f;
     private float initCohesStr = 0.4f;
@@ -59,6 +60,7 @@ public class BoidSettings : ScriptableObject
         moveFwd = true;
         boundsOn = true;
         drawDebugLines = false;
+        UIManager.Instance.UpdateUI();
     }
     public void ToggleDebugLines()
     {

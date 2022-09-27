@@ -1,0 +1,8 @@
+ECX UTILITY SCRIPTS
+Last updated: Apr 16, 2022
+
+A variety of Unity utility scripts that I've created over time which are useful for many different projects and save time.
+
+Feel free to utilize whatever's useful, and delete anything not needed for a particular project.  For example, if your game project isn't using DOTS, simply delete the DOTS folder and keep the rest. (note that many scripts inherit from the Singleton script so avoid deleting that one unless necessary.)
+
+Enjoy!

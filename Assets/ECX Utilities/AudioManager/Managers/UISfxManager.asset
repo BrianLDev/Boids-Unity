@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27fbdb4f9ca25442882c18e411b989c2, type: 3}
+  m_Name: UISfxManager
+  m_EditorClassIdentifier: 
+  mouseOver: {fileID: 8300000, guid: c597079a588af4b45a004fa9826807a2, type: 3}
+  buttonClick: {fileID: 8300000, guid: c597079a588af4b45a004fa9826807a2, type: 3}
+  errorSound: {fileID: 8300000, guid: c597079a588af4b45a004fa9826807a2, type: 3}

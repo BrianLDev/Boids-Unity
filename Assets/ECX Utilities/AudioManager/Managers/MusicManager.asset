@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e5be0ec0931a44009542adbcf7845c5, type: 3}
   m_Name: MusicManager
   m_EditorClassIdentifier: 
-  mainMenuMusic: {fileID: 8300000, guid: acd1adfe4951e4b2a94016e61033d570, type: 3}
-  gameMusic: {fileID: 8300000, guid: acd1adfe4951e4b2a94016e61033d570, type: 3}
-  gameOverMusic: {fileID: 8300000, guid: acd1adfe4951e4b2a94016e61033d570, type: 3}
+  mainMenuMusic: {fileID: 8300000, guid: fe19f51bc9e124bafa991c7959cf13cf, type: 3}
+  gameMusic: {fileID: 8300000, guid: fe19f51bc9e124bafa991c7959cf13cf, type: 3}
+  gameOverMusic: {fileID: 8300000, guid: fe19f51bc9e124bafa991c7959cf13cf, type: 3}
   victoryStinger: {fileID: 8300000, guid: c59f6fc35f5d74c60b644832e3de858b, type: 3}
   defeatStinger: {fileID: 8300000, guid: c59f6fc35f5d74c60b644832e3de858b, type: 3}

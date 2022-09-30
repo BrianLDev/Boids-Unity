@@ -6,7 +6,7 @@ using UnityEngine;
 public class BoidSettings : ScriptableObject
 {
 #region Variables
-    public int totalBoids = 200;
+    public int totalBoids;
     // [Tooltip("Must check or uncheck this BEFORE pressing Play in Unity Editor")]
     // public bool useJobSystem = false;
     [Tooltip("Game Object for boid including 3d model, animations, etc")]
@@ -31,6 +31,7 @@ public class BoidSettings : ScriptableObject
     private GameObject bounds;
     // initial values to be used at start and reset
     private int initTotalBoids = 200;
+    private int maxTotalBoids = 500;
     private float initSeparStr = 0.75f;
     private float initAlignStr = 0.4f;
     private float initCohesStr = 0.4f;
@@ -41,15 +42,18 @@ public class BoidSettings : ScriptableObject
 #endregion Variables
 
 #region Methods 
+    public void ChangeCount(int count) => totalBoids = Mathf.Clamp(count, 1, maxTotalBoids);
     public void ChangeSeparation(float separation) => separationStrength = Mathf.Clamp(separation, 0, 1);
     public void ChangeAlignment(float alignment) => alignmentStrength = Mathf.Clamp(alignment, 0, 1);
     public void ChangeCohesion(float cohesion) => cohesionStrength = Mathf.Clamp(cohesion, 0, 1);
     public void ChangeSpeed(float spd) => speed = Mathf.Clamp(spd, 0, 8);
     public void ChangeMaxForce(float mxForce) => maxForce = Mathf.Clamp(mxForce, 0, 1);
     public void ChangePerception(float perception) => perceptionRange = Mathf.Clamp(perception, 0, 2);
+
     public void ResetSettings()
     {
         // NOTE - THIS RESETS THE ACTUAL VALUES BUT NOT THE UI SLIDERS.  NOT WORTH TIME/EFFORT TO CONNECT EVERYTHING TO UI.
+        totalBoids = initTotalBoids;
         separationStrength = initSeparStr;
         alignmentStrength = initAlignStr;
         cohesionStrength = initCohesStr;

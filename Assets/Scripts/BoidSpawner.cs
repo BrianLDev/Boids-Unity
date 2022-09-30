@@ -25,16 +25,16 @@ public class BoidSpawner : MonoBehaviour
             spawnLocation = this.transform;
         else
             boundaryRadius = spawnLocation.localScale.x / 2;
+    }
 
+    private void Start()
+    {
         // if (boidSettings.useJobSystem)
         //     SpawnBoidsJobs(boidSettings.totalBoids);
         // else
         boidSettings.ResetSettings();
         SpawnBoids(boidSettings.totalBoids);
-    }
 
-    private void Start()
-    {
         if (mainVCam)
             WatchMainCam();
         Debug.Log("Total boids: " + Boid.population.Count);
@@ -60,6 +60,16 @@ public class BoidSpawner : MonoBehaviour
             newBoidJobs = Instantiate(boidSettings.boidPrefab, boidLocation, Quaternion.identity, this.transform).GetComponent<BoidJobs>();
             // newBoidJobs.SetBoundarySphere(spawnLocation.position, boundaryRadius);  // TODO: UNCOMMENT WHEN BOIDSJOBS DONE
         }
+    }
+
+    public void RespawnBoids() 
+    {
+      // TODO: KILL BOIDS THEN RESPAWN
+    }
+
+    public void KillBoids() 
+    {
+      // TODO: KILL BOIDS
     }
 
     public void ToggleCam()

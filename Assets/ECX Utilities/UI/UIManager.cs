@@ -11,6 +11,8 @@ public class UIManager : Singleton<UIManager> {
     [SerializeField] private Canvas simulationCanvas;
     // [SerializeField] private Canvas optionsMenuCanvas;
     // [SerializeField] private Canvas gameOverScreenCanvas;
+    [SerializeField] private Slider countSlider;
+    [SerializeField] private Text countValue;
     [SerializeField] private Slider sepSlider;
     [SerializeField] private Text sepValue;
     [SerializeField] private Slider alignSlider;
@@ -49,6 +51,7 @@ public class UIManager : Singleton<UIManager> {
     }
 
     private void Start() {
+      countSlider.onValueChanged.AddListener((v) => {countValue.text = v.ToString(); });
       sepSlider.onValueChanged.AddListener((v) => {sepValue.text = v.ToString("0.00"); });
       alignSlider.onValueChanged.AddListener((v) => {alignValue.text = v.ToString("0.00"); });
       cohSlider.onValueChanged.AddListener((v) => {cohValue.text = v.ToString("0.00"); });
@@ -136,6 +139,8 @@ public class UIManager : Singleton<UIManager> {
         }
 
         public void UpdateUI() {
+          countSlider.value = boidsSettings.totalBoids;
+          countValue.text = boidsSettings.totalBoids.ToString("0.00");
           sepSlider.value = boidsSettings.separationStrength;
           sepValue.text = boidsSettings.separationStrength.ToString("0.00");
           alignSlider.value = boidsSettings.alignmentStrength;

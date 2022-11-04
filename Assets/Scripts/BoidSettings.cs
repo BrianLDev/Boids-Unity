@@ -30,15 +30,15 @@ public class BoidSettings : ScriptableObject
     public bool drawDebugLines = false;
     private GameObject bounds;
     // initial values to be used at start and reset
-    private int initTotalBoids = 200;
-    private int maxTotalBoids = 500;
-    private float initSeparStr = 0.75f;
-    private float initAlignStr = 0.4f;
-    private float initCohesStr = 0.4f;
-    private float initMass = 1;
-    private float initSpeed = 1.5f;
-    private float initMaxForce = 0.3f;
-    private float initPerceptRange = 0.7f;
+    private const int initTotalBoids = 200;
+    private const int maxTotalBoids = 500;
+    private const float initSeparStr = 0.5f;
+    private const float initAlignStr = 0.4f;
+    private const float initCohesStr = 0.4f;
+    private const float initMass = 1;
+    private const float initSpeed = 1.25f;
+    private const float initMaxForce = 0.4f;
+    private const float initPerceptRange = 0.6f;
 #endregion Variables
 
 #region Methods 
@@ -52,7 +52,6 @@ public class BoidSettings : ScriptableObject
 
     public void ResetSettings()
     {
-        // NOTE - THIS RESETS THE ACTUAL VALUES BUT NOT THE UI SLIDERS.  NOT WORTH TIME/EFFORT TO CONNECT EVERYTHING TO UI.
         totalBoids = initTotalBoids;
         separationStrength = initSeparStr;
         alignmentStrength = initAlignStr;
@@ -66,6 +65,11 @@ public class BoidSettings : ScriptableObject
         drawDebugLines = false;
         UIManager.Instance.UpdateUI();
     }
+    public void Reset() 
+    {
+      ResetSettings();
+    }
+
     public void ToggleDebugLines()
     {
         drawDebugLines = !drawDebugLines;

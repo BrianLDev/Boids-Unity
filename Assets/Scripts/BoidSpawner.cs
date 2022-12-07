@@ -51,16 +51,16 @@ public class BoidSpawner : MonoBehaviour
         }
     }
 
-    public void SpawnBoidsJobs(int number)
-    {
-        BoidJobs newBoidJobs;
-        for (int i = 0; i < boidSettings.totalBoids; i++)
-        {
-            boidLocation = Random.insideUnitSphere.normalized * Random.Range(0, boundaryRadius * 0.9f);
-            newBoidJobs = Instantiate(boidSettings.boidPrefab, boidLocation, Quaternion.identity, this.transform).GetComponent<BoidJobs>();
-            // newBoidJobs.SetBoundarySphere(spawnLocation.position, boundaryRadius);  // TODO: UNCOMMENT WHEN BOIDSJOBS DONE
-        }
-    }
+    // public void SpawnBoidsJobs(int number)
+    // {
+    //     BoidJobs newBoidJobs;
+    //     for (int i = 0; i < boidSettings.totalBoids; i++)
+    //     {
+    //         boidLocation = Random.insideUnitSphere.normalized * Random.Range(0, boundaryRadius * 0.9f);
+    //         newBoidJobs = Instantiate(boidSettings.boidPrefab, boidLocation, Quaternion.identity, this.transform).GetComponent<BoidJobs>();
+    //         // newBoidJobs.SetBoundarySphere(spawnLocation.position, boundaryRadius);  // TODO: UNCOMMENT WHEN BOIDSJOBS DONE
+    //     }
+    // }
 
     public void RespawnBoids() 
     {

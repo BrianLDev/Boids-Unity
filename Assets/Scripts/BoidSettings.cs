@@ -34,7 +34,7 @@ public class BoidSettings : ScriptableObject
     private const int maxTotalBoids = 500;
     private const float initSeparStr = 0.65f;
     private const float initAlignStr = 0.55f;
-    private const float initCohesStr = 0.55f;
+    private const float initCohesStr = 0.4f;
     private const float initMass = 1;
     private const float initSpeed = 1.25f;
     private const float initMaxForce = 0.4f;

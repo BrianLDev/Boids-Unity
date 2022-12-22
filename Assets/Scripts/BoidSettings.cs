@@ -30,7 +30,7 @@ public class BoidSettings : ScriptableObject
     public bool drawDebugLines = false;
     private GameObject bounds;
     // initial values to be used at start and reset
-    private const int initTotalBoids = 200;
+    private const int initTotalBoids = 250;
     private const int maxTotalBoids = 500;
     private const float initSeparStr = 0.65f;
     private const float initAlignStr = 0.55f;

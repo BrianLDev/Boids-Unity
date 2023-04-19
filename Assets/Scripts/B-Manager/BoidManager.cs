@@ -68,7 +68,7 @@ public class BoidManager : MonoBehaviour
     if (boidSettings.moveFwd)
       velocity = transform.forward * boidSettings.speed;  // add forward movement if box checked
     // acceleration
-    acceleration = Vector3.ClampMagnitude(acceleration, boidSettings.maxForce);
+    acceleration = Vector3.ClampMagnitude(acceleration, boidSettings.maxAccel);
     velocity += acceleration;
     // move position and rotation
     transform.position += velocity * Time.deltaTime;
@@ -152,7 +152,7 @@ public class BoidManager : MonoBehaviour
         }
         // separationForce = separationForce.normalized * boidSettings.speed;   // removed - slowed things down and not needed
         separationForce *= boidSettings.separationStrength;
-        separationForce = Vector3.ClampMagnitude(separationForce, boidSettings.maxForce / 2);   // clamp separation to be much weaker than other 2 methods to avoid jitter
+        separationForce = Vector3.ClampMagnitude(separationForce, boidSettings.maxAccel / 2);   // clamp separation to be much weaker than other 2 methods to avoid jitter
         if (boidSettings.drawDebugLines)
           Debug.DrawLine(transform.position, transform.position + separationForce, Color.red);
       }
@@ -177,7 +177,7 @@ public class BoidManager : MonoBehaviour
         // alignmentForce = alignmentForce.normalized * boidSettings.speed; // removed - slowed things down and not needed
         alignmentForce /= neighbors.Count;
         alignmentForce *= boidSettings.alignmentStrength;
-        alignmentForce = Vector3.ClampMagnitude(alignmentForce, boidSettings.maxForce);
+        alignmentForce = Vector3.ClampMagnitude(alignmentForce, boidSettings.maxAccel);
         if (boidSettings.drawDebugLines)
           Debug.DrawLine(transform.position, transform.position + alignmentForce, Color.green);
       }
@@ -202,7 +202,7 @@ public class BoidManager : MonoBehaviour
         cohesionForce /= neighbors.Count;   // get average position (center)
         cohesionForce -= transform.position; // convert to a vector pointing from boid to center
         cohesionForce *= boidSettings.cohesionStrength;
-        cohesionForce = Vector3.ClampMagnitude(cohesionForce, boidSettings.maxForce);
+        cohesionForce = Vector3.ClampMagnitude(cohesionForce, boidSettings.maxAccel);
         if (boidSettings.drawDebugLines)
           Debug.DrawLine(transform.position, transform.position + cohesionForce, Color.blue);
       }

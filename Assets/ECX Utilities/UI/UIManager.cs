@@ -150,8 +150,8 @@ public class UIManager : Singleton<UIManager>
     cohValue.text = boidsSettings.cohesionStrength.ToString("0.00");
     spdSlider.value = boidsSettings.speed;
     spdValue.text = boidsSettings.speed.ToString("0.00");
-    forceSlider.value = boidsSettings.maxForce;
-    forceValue.text = boidsSettings.maxForce.ToString("0.00");
+    forceSlider.value = boidsSettings.maxAccel;
+    forceValue.text = boidsSettings.maxAccel.ToString("0.00");
     perceptSlider.value = boidsSettings.perceptionRange;
     perceptValue.text = boidsSettings.perceptionRange.ToString("0.00");
   }

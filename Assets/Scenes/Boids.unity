@@ -431,7 +431,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Max Force
+  m_Text: Max Accel
 --- !u!222 &8062781
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9631,7 +9631,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2147468791}
   m_Layer: 5
-  m_Name: MaxForce
+  m_Name: MaxAccel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

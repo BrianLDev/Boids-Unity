@@ -21,7 +21,7 @@ public class BoidSettings : ScriptableObject
   [Range(0.01f, 3)]
   public float speed;
   [Range(0.01f, 1f)]
-  public float maxForce;
+  public float maxAccel;
   [Range(0.01f, 2f)]
   public float perceptionRange;
   public bool moveFwd = true;
@@ -44,7 +44,7 @@ public class BoidSettings : ScriptableObject
   public void ChangeAlignment(float alignment) => alignmentStrength = Mathf.Clamp(alignment, 0, 1);
   public void ChangeCohesion(float cohesion) => cohesionStrength = Mathf.Clamp(cohesion, 0, 1);
   public void ChangeSpeed(float spd) => speed = Mathf.Clamp(spd, 0, 8);
-  public void ChangeMaxForce(float mxForce) => maxForce = Mathf.Clamp(mxForce, 0, 1);
+  public void ChangeMaxForce(float mxForce) => maxAccel = Mathf.Clamp(mxForce, 0, 1);
   public void ChangePerception(float perception) => perceptionRange = Mathf.Clamp(perception, 0, 2);
 
   public void ResetSettings()
@@ -55,7 +55,7 @@ public class BoidSettings : ScriptableObject
     cohesionStrength = initCohesStr;
     mass = initMass;
     speed = initSpeed;
-    maxForce = initMaxForce;
+    maxAccel = initMaxForce;
     perceptionRange = initPerceptRange;
     moveFwd = true;
     boundsOn = true;

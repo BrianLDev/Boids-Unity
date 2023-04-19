@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+using Unity.Jobs;
 
 /// <summary>
 /// Scenario B) BoidManager handles all boid behavior in a centralized manager class.
@@ -8,7 +8,7 @@ using UnityEngine;
 /// </summary>
 public class BoidManager : MonoBehaviour
 {
-  public static List<Transform> population;
+  public static List<Boid> population;
 
   public BoidSettings boidSettings;
   private Vector3 boundaryCenter;
@@ -16,17 +16,21 @@ public class BoidManager : MonoBehaviour
   private Quaternion targetRotation;
   private Vector3 velocity, acceleration, separationForce, alignmentForce, cohesionForce;
   // variables for FindNeighbors made global to minimize garbage collection
-  private Dictionary<Boid, (Vector3, Vector3, Vector3, float)> neighbors;  // Key=Boid, Values=(position, velocityOther, vectorBetween, sqrMagnitude distance)
+  // neighbors: Key=Boid, Values=(position, velocityOther, vectorBetween, sqrMagnitude distance)
+  private Dictionary<Boid, (Vector3, Vector3, Vector3, float)> neighbors;  
   private Vector3 vectorBetween, velocityOther, targetVector;
   private float sqrPerceptionRange, sqrMagnitudeTemp;
 
   private void Awake()
   {
-    if (boidSettings == null)
-      AssetDatabase.LoadAssetAtPath(AssetDatabase.FindAssets("BoidSettings")[0], typeof(ScriptableObject));
     if (population == null)
-      population = new List<Transform>();
+      population = new List<Boid>();
     // population.Add(this);
+    if (neighbors == null)
+      neighbors = new Dictionary<Boid, (Vector3, Vector3, Vector3, float)>();
+  }
+
+  private void Start() {
     Initialize();
   }
 
@@ -45,16 +49,15 @@ public class BoidManager : MonoBehaviour
 
   private void Update()
   {
-    Flocking(); // handles Separation, Alignment, Cohesion forces
+    Flocking(); // handles Separation, Alignment, Cohesion calculations
     Move(); // handles movement (shocker!) except for boundary turning which is handled below
     TurnAtBounds(); // makes sure boids turn back when they reach bounds
-    ResetForces(); // reset all forces to 0 since intertial bodies continue at same velocity unless a force acts on them
+    ResetForces(); // reset all forces to 0 since inertial bodies continue at same velocity unless a force acts on them
   }
 
   private void ApplyForce(Vector3 force)
   {
-    force /= boidSettings.mass;
-    acceleration += force;
+    acceleration += (force / boidSettings.mass);
   }
 
   private void ResetForces()
@@ -67,12 +70,10 @@ public class BoidManager : MonoBehaviour
     velocity = Vector3.zero;    // reset velocity
     if (boidSettings.moveFwd)
       velocity = transform.forward * boidSettings.speed;  // add forward movement if box checked
-    // acceleration
     acceleration = Vector3.ClampMagnitude(acceleration, boidSettings.maxAccel);
     velocity += acceleration;
     // move position and rotation
     transform.position += velocity * Time.deltaTime;
-    transform.position = Vector3.Lerp(transform.position, transform.position + velocity, Time.deltaTime);
     transform.rotation = Quaternion.LookRotation(velocity);
   }
 
@@ -84,7 +85,6 @@ public class BoidManager : MonoBehaviour
     }
     else if ((transform.position - boundaryCenter).sqrMagnitude > (boundaryRadius * boundaryRadius) * 0.9f)
     {
-      // targetRotation = Quaternion.Inverse(transform.rotation);
       targetRotation = Quaternion.LookRotation(boundaryCenter - transform.position + Random.onUnitSphere * boundaryRadius * 0.5f);
     }
     transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * boidSettings.speed);
@@ -105,41 +105,36 @@ public class BoidManager : MonoBehaviour
 
   private void FindNeighbors()
   {
-    if (neighbors == null)
-      neighbors = new Dictionary<Boid, (Vector3, Vector3, Vector3, float)>();
-    else
-      neighbors.Clear();
+    neighbors.Clear();
 
     // sqrMagnitude is a bit faster than Magnitude since it doesn't require sqrt function
     sqrPerceptionRange = boidSettings.perceptionRange * boidSettings.perceptionRange;
     // reset values before looping through neighbors
     velocityOther = vectorBetween = Vector3.zero;
     sqrMagnitudeTemp = 0f;
-    // foreach (Boid other in population)
-    // {
-    //   velocityOther = other.velocity;
-    //   vectorBetween = other.transform.position - transform.position;
-    //   sqrMagnitudeTemp = vectorBetween.sqrMagnitude;
-    //   if (sqrMagnitudeTemp < sqrPerceptionRange)
-    //   {
-    //     if (other != this)
-    //     {    // skip self
-    //          // store the neighbor Boid as dictionary key, with value = a tuple of Vector3 vectorBetween, float of the distance squared for super fast lookups.
-    //       neighbors.Add(other, (other.transform.position, velocityOther, vectorBetween, sqrMagnitudeTemp));
-    //     }
-    //   }
-    // }
+    foreach (Boid other in population)
+    {
+      // velocityOther = other.velocity;
+      vectorBetween = other.transform.position - transform.position;
+      sqrMagnitudeTemp = vectorBetween.sqrMagnitude;
+      if (sqrMagnitudeTemp < sqrPerceptionRange)
+      {
+        if (other != this)
+        {    // skip self
+             // store the neighbor Boid as dictionary key, with value = a tuple of Vector3 vectorBetween, float of the distance squared for super fast lookups.
+          neighbors.Add(other, (other.transform.position, velocityOther, vectorBetween, sqrMagnitudeTemp));
+        }
+      }
+    }
   }
 
-  // SEPARATION (aka avoidance) = Steer to avoid crowding local flockmates
+  // SEPARATION (aka buffer) = Steer to avoid crowding local flockmates
   private void Separation()
   {
     if (boidSettings.separationStrength > 0)
     {
       if (neighbors == null || neighbors.Count <= 0)
-      {
         return;
-      }
       else
       {
         foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors)
@@ -150,7 +145,6 @@ public class BoidManager : MonoBehaviour
             separationForce -= item.Value.Item3;    // Item3 = vectorBetween
           }
         }
-        // separationForce = separationForce.normalized * boidSettings.speed;   // removed - slowed things down and not needed
         separationForce *= boidSettings.separationStrength;
         separationForce = Vector3.ClampMagnitude(separationForce, boidSettings.maxAccel / 2);   // clamp separation to be much weaker than other 2 methods to avoid jitter
         if (boidSettings.drawDebugLines)
@@ -159,15 +153,13 @@ public class BoidManager : MonoBehaviour
     }
   }
 
-  // ALIGNMENT (aka copy) = Steer towards the average heading of local flockmates
+  // ALIGNMENT (aka avg direction) = Steer towards the average heading of local flockmates
   private void Alignment()
   {
     if (boidSettings.alignmentStrength > 0)
     {
       if (neighbors == null || neighbors.Count <= 0)
-      {
         return;
-      }
       else
       {
         foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors)
@@ -190,9 +182,7 @@ public class BoidManager : MonoBehaviour
     if (boidSettings.cohesionStrength > 0)
     {
       if (neighbors == null || neighbors.Count <= 0)
-      {
         return;
-      }
       else
       {
         foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors)

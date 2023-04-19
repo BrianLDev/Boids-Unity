@@ -532,7 +532,7 @@ GameObject:
   - component: {fileID: 7147685746699903823}
   - component: {fileID: 1407194283}
   m_Layer: 6
-  m_Name: SimpleSardine
+  m_Name: Boid-Sardine
   m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -575,6 +575,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1407194283
 MonoBehaviour:
   m_ObjectHideFlags: 0

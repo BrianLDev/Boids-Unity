@@ -3,11 +3,12 @@ using UnityEditor;
 using UnityEngine;
 
 /// <summary>
-/// Scenario A) Boid class handles each Boid behavior individually.  It is the slowest of the 4 scenarios.
+/// Scenario B) BoidManager handles all boid behavior in a centralized manager class.
+/// It is faster than A) individual boids, but slower than C) a manager that uses the Jobs system and D) Entities + Jobs system
 /// </summary>
-public class Boid : MonoBehaviour
+public class BoidManager : MonoBehaviour
 {
-  public static List<Boid> population;
+  public static List<Transform> population;
 
   public BoidSettings boidSettings;
   private Vector3 boundaryCenter;
@@ -21,12 +22,11 @@ public class Boid : MonoBehaviour
 
   private void Awake()
   {
+    if (boidSettings == null)
+      AssetDatabase.LoadAssetAtPath(AssetDatabase.FindAssets("BoidSettings")[0], typeof(ScriptableObject));
     if (population == null)
-      population = new List<Boid>();
-    population.Add(this);
-  }
-
-  private void Start() {
+      population = new List<Transform>();
+    // population.Add(this);
     Initialize();
   }
 
@@ -115,20 +115,20 @@ public class Boid : MonoBehaviour
     // reset values before looping through neighbors
     velocityOther = vectorBetween = Vector3.zero;
     sqrMagnitudeTemp = 0f;
-    foreach (Boid other in population)
-    {
-      velocityOther = other.velocity;
-      vectorBetween = other.transform.position - transform.position;
-      sqrMagnitudeTemp = vectorBetween.sqrMagnitude;
-      if (sqrMagnitudeTemp < sqrPerceptionRange)
-      {
-        if (other != this)
-        {    // skip self
-             // store the neighbor Boid as dictionary key, with value = a tuple of Vector3 vectorBetween, float of the distance squared for super fast lookups.
-          neighbors.Add(other, (other.transform.position, velocityOther, vectorBetween, sqrMagnitudeTemp));
-        }
-      }
-    }
+    // foreach (Boid other in population)
+    // {
+    //   velocityOther = other.velocity;
+    //   vectorBetween = other.transform.position - transform.position;
+    //   sqrMagnitudeTemp = vectorBetween.sqrMagnitude;
+    //   if (sqrMagnitudeTemp < sqrPerceptionRange)
+    //   {
+    //     if (other != this)
+    //     {    // skip self
+    //          // store the neighbor Boid as dictionary key, with value = a tuple of Vector3 vectorBetween, float of the distance squared for super fast lookups.
+    //       neighbors.Add(other, (other.transform.position, velocityOther, vectorBetween, sqrMagnitudeTemp));
+    //     }
+    //   }
+    // }
   }
 
   // SEPARATION (aka avoidance) = Steer to avoid crowding local flockmates

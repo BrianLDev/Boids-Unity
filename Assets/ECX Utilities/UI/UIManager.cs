@@ -12,6 +12,7 @@ public class UIManager : Singleton<UIManager>
   [SerializeField] private Canvas simulationCanvas;
   [SerializeField] private Canvas optionsMenuCanvas;
   // [SerializeField] private Canvas gameOverScreenCanvas;
+  [SerializeField] private Button debugLinesButton;   // to disable/hide when not in editor mode
   [SerializeField] private Slider countSlider;
   [SerializeField] private Text countValue;
   [SerializeField] private Slider sepSlider;
@@ -58,6 +59,12 @@ public class UIManager : Singleton<UIManager>
   {
     audioManager = AudioManager.Instance;
     UpdateUI();
+    // hide Debug lines button if not running in editor
+    #if UNITY_EDITOR
+      debugLinesButton.gameObject.SetActive(true);
+    #else
+      debugLinesButton.gameObject.SetActive(false);
+    #endif
   }
 
   public void LoadGame()

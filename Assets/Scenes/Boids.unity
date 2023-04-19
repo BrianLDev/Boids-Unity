@@ -8834,6 +8834,7 @@ MonoBehaviour:
   boidsSettings: {fileID: 11400000, guid: 2f4444e8f5258415f8ca577b1b334bf8, type: 2}
   simulationCanvas: {fileID: 1757438890}
   optionsMenuCanvas: {fileID: 544859448}
+  debugLinesButton: {fileID: 6266001}
   countSlider: {fileID: 1276540224}
   countValue: {fileID: 253135147}
   sepSlider: {fileID: 6074259}

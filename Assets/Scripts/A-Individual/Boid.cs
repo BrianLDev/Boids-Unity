@@ -18,7 +18,6 @@ public class Boid : MonoBehaviour
   private Dictionary<Boid, (Vector3, Vector3, Vector3, float)> neighbors;  
   private Vector3 vectorBetween, velocityOther, targetVector;
   private float sqrPerceptionRange, sqrMagnitudeTemp;
-  private LineRenderer separationLine, alignmentLine, cohesionLine;
 
   private void Awake()
   {
@@ -27,10 +26,6 @@ public class Boid : MonoBehaviour
     population.Add(this);
     if (neighbors == null)
       neighbors = new Dictionary<Boid, (Vector3, Vector3, Vector3, float)>();
-    separationLine = gameObject.AddComponent<LineRenderer>();
-    separationLine.enabled = false;
-    // alignmentLine = gameObject.AddComponent<LineRenderer>();
-    // cohesionLine = gameObject.AddComponent<LineRenderer>();
   }
 
   private void Start() {
@@ -149,12 +144,7 @@ public class Boid : MonoBehaviour
         separationForce *= boidSettings.separationStrength;
         separationForce = Vector3.ClampMagnitude(separationForce, boidSettings.maxAccel / 2);   // clamp separation to be much weaker than other 2 methods to avoid jitter
         if (boidSettings.drawDebugLines) {
-          // Debug.DrawLine(transform.position, transform.position + separationForce, Color.red);
-          separationLine.enabled = true;
-          separationLine.positionCount = 2;
-          separationLine.startColor = separationLine.endColor = Color.red;
-          separationLine.SetPosition(0, transform.position);
-          separationLine.SetPosition(1, transform.position + separationForce);
+          Debug.DrawLine(transform.position, transform.position + separationForce, Color.red);
         }
       }
     }
@@ -178,11 +168,6 @@ public class Boid : MonoBehaviour
         alignmentForce = Vector3.ClampMagnitude(alignmentForce, boidSettings.maxAccel);
         if (boidSettings.drawDebugLines) {
           Debug.DrawLine(transform.position, transform.position + alignmentForce, Color.green);
-          // alignmentLine.enabled = true;
-          // alignmentLine.positionCount = 2;
-          // alignmentLine.startColor = alignmentLine.endColor = Color.green;
-          // alignmentLine.SetPosition(0, transform.position);
-          // alignmentLine.SetPosition(1, transform.position + alignmentForce);
         }
       }
     }
@@ -207,11 +192,6 @@ public class Boid : MonoBehaviour
         cohesionForce = Vector3.ClampMagnitude(cohesionForce, boidSettings.maxAccel);
         if (boidSettings.drawDebugLines) {
           Debug.DrawLine(transform.position, transform.position + cohesionForce, Color.blue);
-          // cohesionLine.enabled = true;
-          // cohesionLine.positionCount = 2;
-          // cohesionLine.startColor = cohesionLine.endColor = Color.green;
-          // cohesionLine.SetPosition(0, transform.position);
-          // cohesionLine.SetPosition(1, transform.position + cohesionForce);
         }
       }
     }

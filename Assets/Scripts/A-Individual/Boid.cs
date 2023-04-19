@@ -18,6 +18,7 @@ public class Boid : MonoBehaviour
   private Dictionary<Boid, (Vector3, Vector3, Vector3, float)> neighbors;  
   private Vector3 vectorBetween, velocityOther, targetVector;
   private float sqrPerceptionRange, sqrMagnitudeTemp;
+  private LineRenderer separationLine, alignmentLine, cohesionLine;
 
   private void Awake()
   {
@@ -26,6 +27,10 @@ public class Boid : MonoBehaviour
     population.Add(this);
     if (neighbors == null)
       neighbors = new Dictionary<Boid, (Vector3, Vector3, Vector3, float)>();
+    separationLine = gameObject.AddComponent<LineRenderer>();
+    separationLine.enabled = false;
+    // alignmentLine = gameObject.AddComponent<LineRenderer>();
+    // cohesionLine = gameObject.AddComponent<LineRenderer>();
   }
 
   private void Start() {
@@ -78,9 +83,7 @@ public class Boid : MonoBehaviour
   private void TurnAtBounds()
   {
     if (!boidSettings.boundsOn)
-    {
       return;
-    }
     else if ((transform.position - boundaryCenter).sqrMagnitude > (boundaryRadius * boundaryRadius) * 0.9f)
     {
       targetRotation = Quaternion.LookRotation(boundaryCenter - transform.position + Random.onUnitSphere * boundaryRadius * 0.5f);
@@ -119,7 +122,7 @@ public class Boid : MonoBehaviour
       {
         if (other != this)
         {    // skip self
-             // store the neighbor Boid as dictionary key, with value = a tuple of Vector3 vectorBetween, float of the distance squared for super fast lookups.
+             // store the neighbor Boid as dictionary for fast lookups, with value = a tuple of Vector3 position, velocityOther, vectorBetween, and float of the distance squared.
           neighbors.Add(other, (other.transform.position, velocityOther, vectorBetween, sqrMagnitudeTemp));
         }
       }
@@ -138,15 +141,21 @@ public class Boid : MonoBehaviour
         foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors)
         {
           // adjust range depending on strength
-          if (item.Value.Item4 < boidSettings.perceptionRange * boidSettings.separationStrength)
+          if (item.Value.Item4 < boidSettings.perceptionRange * boidSettings.separationStrength)  // Item4 = squaredDistance
           {
             separationForce -= item.Value.Item3;    // Item3 = vectorBetween
           }
         }
         separationForce *= boidSettings.separationStrength;
         separationForce = Vector3.ClampMagnitude(separationForce, boidSettings.maxAccel / 2);   // clamp separation to be much weaker than other 2 methods to avoid jitter
-        if (boidSettings.drawDebugLines)
-          Debug.DrawLine(transform.position, transform.position + separationForce, Color.red);
+        if (boidSettings.drawDebugLines) {
+          // Debug.DrawLine(transform.position, transform.position + separationForce, Color.red);
+          separationLine.enabled = true;
+          separationLine.positionCount = 2;
+          separationLine.startColor = separationLine.endColor = Color.red;
+          separationLine.SetPosition(0, transform.position);
+          separationLine.SetPosition(1, transform.position + separationForce);
+        }
       }
     }
   }
@@ -164,12 +173,17 @@ public class Boid : MonoBehaviour
         {
           alignmentForce += item.Value.Item2; // sum all neighbor velocities (Item2 = velocity)
         }
-        // alignmentForce = alignmentForce.normalized * boidSettings.speed; // removed - slowed things down and not needed
         alignmentForce /= neighbors.Count;
         alignmentForce *= boidSettings.alignmentStrength;
         alignmentForce = Vector3.ClampMagnitude(alignmentForce, boidSettings.maxAccel);
-        if (boidSettings.drawDebugLines)
+        if (boidSettings.drawDebugLines) {
           Debug.DrawLine(transform.position, transform.position + alignmentForce, Color.green);
+          // alignmentLine.enabled = true;
+          // alignmentLine.positionCount = 2;
+          // alignmentLine.startColor = alignmentLine.endColor = Color.green;
+          // alignmentLine.SetPosition(0, transform.position);
+          // alignmentLine.SetPosition(1, transform.position + alignmentForce);
+        }
       }
     }
   }
@@ -191,8 +205,14 @@ public class Boid : MonoBehaviour
         cohesionForce -= transform.position; // convert to a vector pointing from boid to center
         cohesionForce *= boidSettings.cohesionStrength;
         cohesionForce = Vector3.ClampMagnitude(cohesionForce, boidSettings.maxAccel);
-        if (boidSettings.drawDebugLines)
+        if (boidSettings.drawDebugLines) {
           Debug.DrawLine(transform.position, transform.position + cohesionForce, Color.blue);
+          // cohesionLine.enabled = true;
+          // cohesionLine.positionCount = 2;
+          // cohesionLine.startColor = cohesionLine.endColor = Color.green;
+          // cohesionLine.SetPosition(0, transform.position);
+          // cohesionLine.SetPosition(1, transform.position + cohesionForce);
+        }
       }
     }
   }

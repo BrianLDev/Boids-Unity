@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum BoidMethod { Individual, Manager, MgrJobs, MgrJobsECS }
+
 [CreateAssetMenu(fileName = "BoidSettings", menuName = "ScriptableObjects/BoidSettings", order = 1)]
 public class BoidSettings : ScriptableObject
 {
+  public BoidMethod boidMethod = BoidMethod.Individual;
   public int totalBoids;
-  // [Tooltip("Must check or uncheck this BEFORE pressing Play in Unity Editor")]
-  // public bool useJobSystem = false;
   [Tooltip("Game Object for boid including 3d model, animations, etc")]
   public GameObject boidPrefab;
   [Range(0.01f, 1f)]

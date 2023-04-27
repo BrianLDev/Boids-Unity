@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 using EcxUtilities;
 using UnityEngine.UI;
 
+// TODO: CONNECT PAUSE MENU UI TO UI MANAGER (DROPDOWN, BOID COUNT, ETC)
+
 public class UIManager : Singleton<UIManager>
 {
   [SerializeField] private BoidSettings boidsSettings;
@@ -34,7 +36,7 @@ public class UIManager : Singleton<UIManager>
 
   private void Start()
   {
-    // populate canvasList with all avaialble Canvases
+    // Populate canvasList with all avaialble Canvases
     if (canvasList == null)
       canvasList = new List<Canvas>();
     // if (mainMenuCanvas) canvasList.Add(mainMenuCanvas);
@@ -45,7 +47,7 @@ public class UIManager : Singleton<UIManager>
     if (SceneManager.GetActiveScene().name == "Boids")
       ActivateCanvas(simulationCanvas);
 
-    // set up listeners on UI sliders
+    // Set up listeners on UI sliders
     countSlider.onValueChanged.AddListener((v) => { countValue.text = v.ToString(); });
     sepSlider.onValueChanged.AddListener((v) => { sepValue.text = v.ToString("0.00"); });
     alignSlider.onValueChanged.AddListener((v) => { alignValue.text = v.ToString("0.00"); });

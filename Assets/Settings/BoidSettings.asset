@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57ddf2c09ee1945048d82146369d9110, type: 3}
   m_Name: BoidSettings
   m_EditorClassIdentifier: 
+  boidMethod: 0
   totalBoids: 250
   boidPrefab: {fileID: 7147685746709287111, guid: 4af2c449c6bc54dc4be59e5bb84f7c1f, type: 3}
   separationStrength: 0.65
@@ -23,4 +24,4 @@ MonoBehaviour:
   perceptionRange: 0.75
   moveFwd: 1
   boundsOn: 1
-  drawDebugLines: 1
+  drawDebugLines: 0

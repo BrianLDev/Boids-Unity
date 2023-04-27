@@ -149,8 +149,8 @@ public class UIManager : Singleton<UIManager>
 
   public void UpdateUI()
   {
-    countSlider.value = boidsSettings.totalBoids;
-    countValue.text = boidsSettings.totalBoids.ToString("0.00");
+    countSlider.value = boidsSettings.boidCount;
+    countValue.text = boidsSettings.boidCount.ToString("0.00");
     sepSlider.value = boidsSettings.separationStrength;
     sepValue.text = boidsSettings.separationStrength.ToString("0.00");
     alignSlider.value = boidsSettings.alignmentStrength;

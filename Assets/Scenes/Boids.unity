@@ -3829,13 +3829,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 1
-  m_FollowOffset: {x: 0, y: 0.4, z: -0.8}
-  m_XDamping: 1.5
+  m_FollowOffset: {x: 0, y: 0.4, z: -1}
+  m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
   m_AngularDampingMode: 0
   m_PitchDamping: 0
-  m_YawDamping: 0
+  m_YawDamping: 1
   m_RollDamping: 0
   m_AngularDamping: 0
 --- !u!114 &618472915
@@ -4246,9 +4246,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 445425546}
   m_Direction: 0
   m_MinValue: 0.01
-  m_MaxValue: 3
+  m_MaxValue: 5
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 1.5
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -5422,7 +5422,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1261641554}
         m_TargetAssemblyTypeName: BoidSpawner, Assembly-CSharp
-        m_MethodName: ToggleCam
+        m_MethodName: ToggleCamera
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5533,8 +5533,8 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 10
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 0}
-  m_Follow: {fileID: 0}
+  m_LookAt: {fileID: 1471030920}
+  m_Follow: {fileID: 1471030920}
   m_Lens:
     FieldOfView: 60
     OrthographicSize: 5
@@ -5863,6 +5863,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boidSettings: {fileID: 11400000, guid: 2f4444e8f5258415f8ca577b1b334bf8, type: 2}
+  boidManager: {fileID: 0}
   spawnLocation: {fileID: 1471030920}
   mainVCam: {fileID: 1699889525}
   fishVCam: {fileID: 1159230855}

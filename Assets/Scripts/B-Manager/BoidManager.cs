@@ -1,33 +1,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Jobs;
+using EcxUtilities;
 
 /// <summary>
 /// Scenario B) BoidManager handles all boid behavior in a centralized manager class.
 /// It is faster than A) individual boids, but slower than C) a manager that uses the Jobs system and D) Entities + Jobs system
 /// </summary>
-public class BoidManager : MonoBehaviour
+public class BoidManager : Singleton<BoidManager>
 {
-  public static List<Boid> population;
+  private int boidCount;
+  public int BoidCount => boidCount;
 
   public BoidSettings boidSettings;
   private Vector3 boundaryCenter;
   private float boundaryRadius = 10;
   private Quaternion targetRotation;
   private Vector3 velocity, acceleration, separationForce, alignmentForce, cohesionForce;
-  // variables for FindNeighbors made global to minimize garbage collection
-  // neighbors: Key=Boid, Values=(position, velocityOther, vectorBetween, sqrMagnitude distance)
+  // Variables for FindNeighbors made global to minimize garbage collection
+  // Neighbors: Key=Boid, Values=(position, velocityOther, vectorBetween, sqrMagnitude distance)
   private Dictionary<Boid, (Vector3, Vector3, Vector3, float)> neighbors;  
   private Vector3 vectorBetween, velocityOther, targetVector;
   private float sqrPerceptionRange, sqrMagnitudeTemp;
 
   private void Awake()
   {
-    if (population == null)
-      population = new List<Boid>();
-    // population.Add(this);
-    if (neighbors == null)
-      neighbors = new Dictionary<Boid, (Vector3, Vector3, Vector3, float)>();
   }
 
   private void Start() {
@@ -67,12 +64,10 @@ public class BoidManager : MonoBehaviour
 
   private void Move()
   {
-    velocity = Vector3.zero;    // reset velocity
-    if (boidSettings.moveFwd)
-      velocity = transform.forward * boidSettings.speed;  // add forward movement if box checked
+    // Update velocity by (clamped) acceleration
     acceleration = Vector3.ClampMagnitude(acceleration, boidSettings.maxAccel);
     velocity += acceleration;
-    // move position and rotation
+    // Move position and rotation
     transform.position += velocity * Time.deltaTime;
     transform.rotation = Quaternion.LookRotation(velocity);
   }
@@ -112,20 +107,20 @@ public class BoidManager : MonoBehaviour
     // reset values before looping through neighbors
     velocityOther = vectorBetween = Vector3.zero;
     sqrMagnitudeTemp = 0f;
-    foreach (Boid other in population)
-    {
-      // velocityOther = other.velocity;
-      vectorBetween = other.transform.position - transform.position;
-      sqrMagnitudeTemp = vectorBetween.sqrMagnitude;
-      if (sqrMagnitudeTemp < sqrPerceptionRange)
-      {
-        if (other != this)
-        {    // skip self
-             // store the neighbor Boid as dictionary key, with value = a tuple of Vector3 vectorBetween, float of the distance squared for super fast lookups.
-          neighbors.Add(other, (other.transform.position, velocityOther, vectorBetween, sqrMagnitudeTemp));
-        }
-      }
-    }
+    // foreach (Boid other in boidList)
+    // {
+    //   // velocityOther = other.velocity;
+    //   vectorBetween = other.transform.position - transform.position;
+    //   sqrMagnitudeTemp = vectorBetween.sqrMagnitude;
+    //   if (sqrMagnitudeTemp < sqrPerceptionRange)
+    //   {
+    //     if (other != this)
+    //     {    // skip self
+    //          // store the neighbor Boid as dictionary key, with value = a tuple of Vector3 vectorBetween, float of the distance squared for super fast lookups.
+    //       neighbors.Add(other, (other.transform.position, velocityOther, vectorBetween, sqrMagnitudeTemp));
+    //     }
+    //   }
+    // }
   }
 
   // SEPARATION (aka buffer) = Steer to avoid crowding local flockmates

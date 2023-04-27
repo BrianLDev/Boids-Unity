@@ -6,24 +6,25 @@ using UnityEngine;
 /// </summary>
 public class Boid : MonoBehaviour
 {
-  public static List<Boid> population;
+  public static List<Boid> boidList;
 
   public BoidSettings boidSettings;
   private Vector3 boundaryCenter;
   private float boundaryRadius = 10;
+  private bool turningAround = false;
   private Quaternion targetRotation;
   private Vector3 velocity, acceleration, separationForce, alignmentForce, cohesionForce;
-  // variables for FindNeighbors made global to minimize garbage collection
-  // neighbors: Key=Boid, Values=(position, velocityOther, vectorBetween, sqrMagnitude distance)
+  // Variables for FindNeighbors made global to minimize garbage collection
+  // Neighbors: Key=Boid, Values=(position, velocityOther, vectorBetween, sqrMagnitude distance)
   private Dictionary<Boid, (Vector3, Vector3, Vector3, float)> neighbors;  
-  private Vector3 vectorBetween, velocityOther, targetVector;
+  private Vector3 vectorBetween, velocityOther, targetPosition;
   private float sqrPerceptionRange, sqrMagnitudeTemp;
 
   private void Awake()
   {
-    if (population == null)
-      population = new List<Boid>();
-    population.Add(this);
+    if (boidList == null)
+      boidList = new List<Boid>();
+    boidList.Add(this);
     if (neighbors == null)
       neighbors = new Dictionary<Boid, (Vector3, Vector3, Vector3, float)>();
   }
@@ -47,10 +48,10 @@ public class Boid : MonoBehaviour
 
   private void Update()
   {
-    Flocking(); // handles Separation, Alignment, Cohesion calculations
-    Move(); // handles movement (shocker!) except for boundary turning which is handled below
-    TurnAtBounds(); // makes sure boids turn back when they reach bounds
-    ResetForces(); // reset all forces to 0 since inertial bodies continue at same velocity unless a force acts on them
+    Flocking();     // Handles Separation, Alignment, Cohesion calculations
+    TurnAtBounds(); // Makes sure boids turn back when they reach bounds
+    Move();         // Handles movement (shocker!) except for boundary turning which is handled below
+    ResetForces();  // Reset all forces to 0 since inertial bodies continue at same velocity unless a force acts on them
   }
 
   private void ApplyForce(Vector3 force)
@@ -65,25 +66,38 @@ public class Boid : MonoBehaviour
 
   private void Move()
   {
-    velocity = Vector3.zero;    // reset velocity
-    if (boidSettings.moveFwd)
-      velocity = transform.forward * boidSettings.speed;  // add forward movement if box checked
+    // Update velocity by (clamped) acceleration
     acceleration = Vector3.ClampMagnitude(acceleration, boidSettings.maxAccel);
+    // velocity = Vector3.Lerp(velocity, velocity + acceleration, Time.deltaTime * boidSettings.speed * 2);
     velocity += acceleration;
-    // move position and rotation
-    transform.position += velocity * Time.deltaTime;
-    transform.rotation = Quaternion.LookRotation(velocity);
+    velocity = Vector3.ClampMagnitude(velocity, boidSettings.speed);
+    // Move position and rotation
+    if (velocity != Vector3.zero) {
+      transform.position += velocity * Time.deltaTime;
+      transform.rotation = Quaternion.LookRotation(velocity);
+    }
   }
 
   private void TurnAtBounds()
   {
     if (!boidSettings.boundsOn)
       return;
-    else if ((transform.position - boundaryCenter).sqrMagnitude > (boundaryRadius * boundaryRadius) * 0.9f)
+    // Check if outside bounds
+    else if ((transform.position - boundaryCenter).sqrMagnitude > (boundaryRadius * boundaryRadius))
     {
-      targetRotation = Quaternion.LookRotation(boundaryCenter - transform.position + Random.onUnitSphere * boundaryRadius * 0.5f);
+      if (!turningAround) {
+        // If not already turning around, set a new target position on the opposite side of the boundary sphere
+        targetPosition = boundaryCenter + (boundaryCenter - transform.position);
+        turningAround = true;
+      }
+      // Keep turning and moving towards targetPosition
+      targetRotation = Quaternion.LookRotation(targetPosition);
+      transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * boidSettings.speed);
+      velocity = Vector3.Slerp(velocity, targetPosition - transform.position, Time.deltaTime * boidSettings.speed);
     }
-    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * boidSettings.speed);
+    // After reaching target rotation (within range), stop turning around
+    else if (Quaternion.Angle(transform.rotation, targetRotation) <= .01f)
+      turningAround = false;
   }
 
   private void Flocking()
@@ -103,12 +117,12 @@ public class Boid : MonoBehaviour
   {
     neighbors.Clear();
 
-    // sqrMagnitude is a bit faster than Magnitude since it doesn't require sqrt function
+    // SqrMagnitude is a bit faster than Magnitude since it doesn't require sqrt function
     sqrPerceptionRange = boidSettings.perceptionRange * boidSettings.perceptionRange;
-    // reset values before looping through neighbors
+    // Reset values before looping through neighbors
     velocityOther = vectorBetween = Vector3.zero;
     sqrMagnitudeTemp = 0f;
-    foreach (Boid other in population)
+    foreach (Boid other in boidList)
     {
       velocityOther = other.velocity;
       vectorBetween = other.transform.position - transform.position;
@@ -116,8 +130,8 @@ public class Boid : MonoBehaviour
       if (sqrMagnitudeTemp < sqrPerceptionRange)
       {
         if (other != this)
-        {    // skip self
-             // store the neighbor Boid as dictionary for fast lookups, with value = a tuple of Vector3 position, velocityOther, vectorBetween, and float of the distance squared.
+        {    // Skip self
+             // Store the neighbor Boid as dictionary for fast lookups, with value = a tuple of Vector3 position, velocityOther, vectorBetween, and float of the distance squared.
           neighbors.Add(other, (other.transform.position, velocityOther, vectorBetween, sqrMagnitudeTemp));
         }
       }
@@ -135,14 +149,14 @@ public class Boid : MonoBehaviour
       {
         foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors)
         {
-          // adjust range depending on strength
+          // Adjust range depending on strength
           if (item.Value.Item4 < boidSettings.perceptionRange * boidSettings.separationStrength)  // Item4 = squaredDistance
           {
             separationForce -= item.Value.Item3;    // Item3 = vectorBetween
           }
         }
         separationForce *= boidSettings.separationStrength;
-        separationForce = Vector3.ClampMagnitude(separationForce, boidSettings.maxAccel / 2);   // clamp separation to be much weaker than other 2 methods to avoid jitter
+        separationForce = Vector3.ClampMagnitude(separationForce, boidSettings.maxAccel / 2);   // Clamp separation to be much weaker than other 2 methods to avoid jitter
         if (boidSettings.drawDebugLines) {
           Debug.DrawLine(transform.position, transform.position + separationForce, Color.red);
         }
@@ -161,7 +175,7 @@ public class Boid : MonoBehaviour
       {
         foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors)
         {
-          alignmentForce += item.Value.Item2; // sum all neighbor velocities (Item2 = velocity)
+          alignmentForce += item.Value.Item2; // Sum all neighbor velocities (Item2 = velocity)
         }
         alignmentForce /= neighbors.Count;
         alignmentForce *= boidSettings.alignmentStrength;
@@ -184,10 +198,10 @@ public class Boid : MonoBehaviour
       {
         foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors)
         {
-          cohesionForce += item.Value.Item1; // sum all neighbor positions (Item1 = position)
+          cohesionForce += item.Value.Item1; // Sum all neighbor positions (Item1 = position)
         }
-        cohesionForce /= neighbors.Count;   // get average position (center)
-        cohesionForce -= transform.position; // convert to a vector pointing from boid to center
+        cohesionForce /= neighbors.Count;   // Get average position (center)
+        cohesionForce -= transform.position; // Convert to a vector pointing from boid to center
         cohesionForce *= boidSettings.cohesionStrength;
         cohesionForce = Vector3.ClampMagnitude(cohesionForce, boidSettings.maxAccel);
         if (boidSettings.drawDebugLines) {

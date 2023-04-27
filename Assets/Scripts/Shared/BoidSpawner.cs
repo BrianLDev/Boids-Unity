@@ -7,6 +7,7 @@ using UnityEngine;
 public class BoidSpawner : MonoBehaviour
 {
   [SerializeField] private BoidSettings boidSettings;
+  [SerializeField] private BoidManager boidManager;
   [SerializeField] private Transform spawnLocation;
   [SerializeField] private CinemachineVirtualCamera mainVCam;
   [SerializeField] private CinemachineVirtualCamera fishVCam;
@@ -15,6 +16,7 @@ public class BoidSpawner : MonoBehaviour
 
   private void Awake()
   {
+    // Fail safe to auto-load boidSettings, but ideally just pre-assign the settings in the Unity Editor
     if (!boidSettings) {
       string path = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("BoidSettings")[1]);
       boidSettings = AssetDatabase.LoadAssetAtPath<BoidSettings>(path);
@@ -30,23 +32,33 @@ public class BoidSpawner : MonoBehaviour
   private void Start()
   {
     boidSettings.ResetSettings();
-    SpawnBoids(boidSettings.totalBoids);
+    SpawnBoids(boidSettings.boidCount, boidSettings.boidMethod);
 
     if (mainVCam)
-      WatchMainCam();
-    Debug.Log("Total boids: " + Boid.population.Count);
+      WatchMainCamera();
+    if (boidSettings.boidMethod == BoidMethod.Individual)
+      Debug.Log("Total boids: " + Boid.boidList.Count);
+    else
+      Debug.Log("Total boids: " + boidManager.BoidCount);
   }
 
-  public void SpawnBoids(int number)
+  public void SpawnBoids(int number, BoidMethod method)
   {
-    // TODO: SELECT BETWEEN 4 SPAWN OPTIONS
-    SpawnBoidsIndividual(number);
+    Debug.Log("Spawning " + number + " boids using method: " + method.ToString());
+    if (method == BoidMethod.Individual)
+      SpawnBoidsIndividual(number);
+    else if (method == BoidMethod.Manager)
+      SpawnBoidsManager(number);
+    else if (method == BoidMethod.MgrJobs)
+      SpawnBoidsMgrJobs(number);
+    else if (method == BoidMethod.MgrJobsECS)
+      SpawnBoidsMgrJobsEcs(number);
   }
 
   public void SpawnBoidsIndividual(int number)
   {
     Boid newBoid;
-    for (int i = 0; i < boidSettings.totalBoids; i++)
+    for (int i = 0; i < boidSettings.boidCount; i++)
     {
       boidLocation = Random.insideUnitSphere.normalized * Random.Range(0, boundaryRadius * 0.9f);
       newBoid = Instantiate(boidSettings.boidPrefab, boidLocation, Quaternion.identity, this.transform).GetComponent<Boid>();
@@ -55,16 +67,17 @@ public class BoidSpawner : MonoBehaviour
     }
   }
 
-  // public void SpawnBoidsJobs(int number)
-  // {
-  //     BoidJobs newBoidJobs;
-  //     for (int i = 0; i < boidSettings.totalBoids; i++)
-  //     {
-  //         boidLocation = Random.insideUnitSphere.normalized * Random.Range(0, boundaryRadius * 0.9f);
-  //         newBoidJobs = Instantiate(boidSettings.boidPrefab, boidLocation, Quaternion.identity, this.transform).GetComponent<BoidJobs>();
-  //         // newBoidJobs.SetBoundarySphere(spawnLocation.position, boundaryRadius);  // TODO: UNCOMMENT WHEN BOIDSJOBS DONE
-  //     }
-  // }
+  public void SpawnBoidsManager(int number) {
+    // TODO: WRITE THIS
+  }
+
+  public void SpawnBoidsMgrJobs(int number) {
+    // TODO: WRITE THIS
+  }
+
+  public void SpawnBoidsMgrJobsEcs(int number) {
+    // TODO: WRITE THIS
+  }
 
   public void RespawnBoids()
   {
@@ -76,29 +89,32 @@ public class BoidSpawner : MonoBehaviour
     // TODO: KILL BOIDS
   }
 
-  public void ToggleCam()
+  public void ToggleCamera()
   {
     if (mainVCam.gameObject.activeInHierarchy)
-      WatchFishCam();
+      WatchFishCamera();
     else
-      WatchMainCam();
+      WatchMainCamera();
   }
 
-  public void WatchMainCam()
+  public void WatchMainCamera()
   {
     mainVCam.gameObject.SetActive(true);
     fishVCam.gameObject.SetActive(false);
   }
 
-  public void WatchFishCam()
+  public void WatchFishCamera()
   {
     if (fishVCam)
     {
       mainVCam.gameObject.SetActive(false);
       fishVCam.gameObject.SetActive(true);
-      Boid followBoid = FindObjectOfType<Boid>();
-      fishVCam.Follow = followBoid.transform;
-      fishVCam.LookAt = followBoid.transform;
+      int randomBoid = Random.Range(0, boidSettings.boidCount);
+      // TODO - SET UP FOLLOW CAM FOR BOID MANAGER METHODS (ELSE CONDITION)
+      if (boidSettings.boidMethod == BoidMethod.Individual)
+        fishVCam.Follow = fishVCam.LookAt = Boid.boidList[randomBoid].transform;
+      else
+        fishVCam.Follow = fishVCam.LookAt = Boid.boidList[randomBoid].transform;
     }
   }
 }

@@ -8,7 +8,7 @@ public enum BoidMethod { Individual, Manager, MgrJobs, MgrJobsECS }
 public class BoidSettings : ScriptableObject
 {
   public BoidMethod boidMethod = BoidMethod.Individual;
-  public int totalBoids;
+  public int boidCount;
   [Tooltip("Game Object for boid including 3d model, animations, etc")]
   public GameObject boidPrefab;
   [Range(0.01f, 1f)]
@@ -21,17 +21,16 @@ public class BoidSettings : ScriptableObject
   public float mass;
   [Range(0.01f, 3)]
   public float speed;
-  [Range(0.01f, 1f)]
+  [Range(0.01f, 5f)]
   public float maxAccel;
   [Range(0.01f, 2f)]
   public float perceptionRange;
-  public bool moveFwd = true;
   public bool boundsOn = true;
   public bool drawDebugLines = false;
   private GameObject bounds;
-  // initial values to be used at start and reset
-  private const int initTotalBoids = 250;
-  private const int maxTotalBoids = 500;
+  // Initial values to be used at start and reset
+  private const int initBoidCount = 250;
+  private const int maxBoidCount = 500;
   private const float initSeparStr = 0.65f;
   private const float initAlignStr = 0.55f;
   private const float initCohesStr = 0.4f;
@@ -40,7 +39,7 @@ public class BoidSettings : ScriptableObject
   private const float initMaxForce = 0.4f;
   private const float initPerceptRange = 0.75f;
 
-  public void ChangeCount(int count) => totalBoids = Mathf.Clamp(count, 1, maxTotalBoids);
+  public void ChangeCount(int count) => boidCount = Mathf.Clamp(count, 1, maxBoidCount);
   public void ChangeSeparation(float separation) => separationStrength = Mathf.Clamp(separation, 0, 1);
   public void ChangeAlignment(float alignment) => alignmentStrength = Mathf.Clamp(alignment, 0, 1);
   public void ChangeCohesion(float cohesion) => cohesionStrength = Mathf.Clamp(cohesion, 0, 1);
@@ -50,7 +49,7 @@ public class BoidSettings : ScriptableObject
 
   public void ResetSettings()
   {
-    totalBoids = initTotalBoids;
+    boidCount = initBoidCount;
     separationStrength = initSeparStr;
     alignmentStrength = initAlignStr;
     cohesionStrength = initCohesStr;
@@ -58,7 +57,6 @@ public class BoidSettings : ScriptableObject
     speed = initSpeed;
     maxAccel = initMaxForce;
     perceptionRange = initPerceptRange;
-    moveFwd = true;
     boundsOn = true;
     drawDebugLines = false;
     UIManager.Instance.UpdateUI();
@@ -81,5 +79,5 @@ public class BoidSettings : ScriptableObject
     bounds.SetActive(boundsOn);
   }
 
-  // NOTE - TOGGLECAM METHOD IS ON THE BOIDSPAWNER SCRIPT
+  // NOTE - TOGGLECAMERA METHOD IS ON THE BOIDSPAWNER SCRIPT
 }

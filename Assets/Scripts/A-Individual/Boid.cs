@@ -129,9 +129,10 @@ public class Boid : MonoBehaviour
       sqrMagnitudeTemp = vectorBetween.sqrMagnitude;
       if (sqrMagnitudeTemp < sqrPerceptionRange)
       {
+        // Skip self
         if (other != this)
-        {    // Skip self
-             // Store the neighbor Boid as dictionary for fast lookups, with value = a tuple of Vector3 position, velocityOther, vectorBetween, and float of the distance squared.
+        {
+          // Store the neighbor Boid as dictionary for fast lookups, with value = a tuple of Vector3 position, velocityOther, vectorBetween, and float of the distance squared.
           neighbors.Add(other, (other.transform.position, velocityOther, vectorBetween, sqrMagnitudeTemp));
         }
       }

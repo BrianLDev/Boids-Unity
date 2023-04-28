@@ -3045,8 +3045,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 50, y: 0}
-  m_SizeDelta: {x: 500, y: 50}
+  m_AnchoredPosition: {x: 60, y: 0}
+  m_SizeDelta: {x: 500, y: 40}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &505956091
 MonoBehaviour:
@@ -3097,8 +3097,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 26
+  m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3236,7 +3236,7 @@ GameObject:
   - component: {fileID: 544859447}
   - component: {fileID: 544859446}
   m_Layer: 5
-  m_Name: Canvas-Pause
+  m_Name: Canvas-Options
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6428,7 +6428,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 375}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 200, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1442158506
 MonoBehaviour:
@@ -6811,7 +6811,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -200, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 200, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1516763519
 MonoBehaviour:
@@ -6860,8 +6860,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 26
+  m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -8017,7 +8017,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -200, y: -50}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 200, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1751620170
 MonoBehaviour:
@@ -8066,8 +8066,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 26
+  m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -8845,8 +8845,6 @@ MonoBehaviour:
   simulationCanvas: {fileID: 1757438890}
   optionsMenuCanvas: {fileID: 544859448}
   debugLinesButton: {fileID: 6266001}
-  countSlider: {fileID: 1276540224}
-  countValue: {fileID: 253135147}
   sepSlider: {fileID: 6074259}
   sepValue: {fileID: 999702398}
   alignSlider: {fileID: 240657581}
@@ -8859,6 +8857,11 @@ MonoBehaviour:
   forceValue: {fileID: 1527560413}
   perceptSlider: {fileID: 495101458}
   perceptValue: {fileID: 70668709}
+  boidCount: {fileID: 1961203570}
+  simMethod: {fileID: 505956091}
+  countSlider: {fileID: 1276540224}
+  countSliderValue: {fileID: 253135147}
+  methodDropdown: {fileID: 1432980913}
 --- !u!1 &1945247141
 GameObject:
   m_ObjectHideFlags: 0
@@ -8970,8 +8973,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 50, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 60, y: 0}
+  m_SizeDelta: {x: 200, y: 40}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1961203570
 MonoBehaviour:
@@ -9020,8 +9023,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 26
+  m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

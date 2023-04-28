@@ -4,19 +4,17 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using EcxUtilities;
 using UnityEngine.UI;
+using TMPro;
 
 // TODO: CONNECT PAUSE MENU UI TO UI MANAGER (DROPDOWN, BOID COUNT, ETC)
 
 public class UIManager : Singleton<UIManager>
 {
   [SerializeField] private BoidSettings boidsSettings;
-  // [SerializeField] private Canvas mainMenuCanvas;
   [SerializeField] private Canvas simulationCanvas;
   [SerializeField] private Canvas optionsMenuCanvas;
-  // [SerializeField] private Canvas gameOverScreenCanvas;
-  [SerializeField] private Button debugLinesButton;   // to disable/hide when not in editor mode
-  [SerializeField] private Slider countSlider;
-  [SerializeField] private Text countValue;
+  // HUD
+  [SerializeField] private Button debugLinesButton;   // Button is hidden when not in editor mode
   [SerializeField] private Slider sepSlider;
   [SerializeField] private Text sepValue;
   [SerializeField] private Slider alignSlider;
@@ -29,6 +27,13 @@ public class UIManager : Singleton<UIManager>
   [SerializeField] private Text forceValue;
   [SerializeField] private Slider perceptSlider;
   [SerializeField] private Text perceptValue;
+  // OPTIONS MENU
+  [SerializeField] private TextMeshProUGUI boidCount;
+  [SerializeField] private TextMeshProUGUI simMethod;
+  [SerializeField] private Slider countSlider;
+  [SerializeField] private Text countSliderValue;
+  [SerializeField] private TMP_Dropdown methodDropdown;
+
   private List<Canvas> canvasList;
   private Canvas currentCanvas;
   private AudioManager audioManager;
@@ -39,29 +44,29 @@ public class UIManager : Singleton<UIManager>
     // Populate canvasList with all avaialble Canvases
     if (canvasList == null)
       canvasList = new List<Canvas>();
-    // if (mainMenuCanvas) canvasList.Add(mainMenuCanvas);
     if (simulationCanvas) canvasList.Add(simulationCanvas);
     if (optionsMenuCanvas) canvasList.Add(optionsMenuCanvas);
-    // if (gameOverScreenCanvas) canvasList.Add(gameOverScreenCanvas);
     
     if (SceneManager.GetActiveScene().name == "Boids")
       ActivateCanvas(simulationCanvas);
 
     // Set up listeners on UI sliders
-    countSlider.onValueChanged.AddListener((v) => { countValue.text = v.ToString(); });
+    // HUD
     sepSlider.onValueChanged.AddListener((v) => { sepValue.text = v.ToString("0.00"); });
     alignSlider.onValueChanged.AddListener((v) => { alignValue.text = v.ToString("0.00"); });
     cohSlider.onValueChanged.AddListener((v) => { cohValue.text = v.ToString("0.00"); });
     spdSlider.onValueChanged.AddListener((v) => { spdValue.text = v.ToString("0.00"); });
     forceSlider.onValueChanged.AddListener((v) => { forceValue.text = v.ToString("0.00"); });
     perceptSlider.onValueChanged.AddListener((v) => { perceptValue.text = v.ToString("0.00"); });
+    // OPTIONS MENU
+    countSlider.onValueChanged.AddListener((v) => { countSliderValue.text = v.ToString(); });
   }
 
   private void OnEnable()
   {
     audioManager = AudioManager.Instance;
-    UpdateUI();
-    // hide Debug lines button if not running in editor
+    RefreshUI();
+    // Hide Debug lines button if not running in editor
     #if UNITY_EDITOR
       debugLinesButton.gameObject.SetActive(true);
     #else
@@ -71,16 +76,8 @@ public class UIManager : Singleton<UIManager>
 
   public void LoadGame()
   {
-    // SceneManager.LoadScene(1);
     ActivateCanvas(simulationCanvas);
   }
-
-  // public void LoadGameOverUI() {
-  //     Canvas canvas = gameOverScreenCanvas;
-  //     float delay = 1.5f;
-  //     object[] parameters = new object[2] {canvas, delay};
-  //     StartCoroutine("ShowUIWithDelay", parameters);
-  // }
 
   private IEnumerator ShowUIWithDelay(object[] parameters)
   {
@@ -91,6 +88,7 @@ public class UIManager : Singleton<UIManager>
 
   public void ToggleOptionsMenu()
   {
+    RefreshUI();
     isOptionsUIVisible = !isOptionsUIVisible;
     optionsMenuCanvas.gameObject.SetActive(isOptionsUIVisible);
     currentCanvas.gameObject.SetActive(!isOptionsUIVisible);
@@ -120,11 +118,11 @@ public class UIManager : Singleton<UIManager>
   public void ExitGame()
   {
     // TODO: ADD AN "ARE YOU SURE" MESSAGE
-#if UNITY_EDITOR
-    UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
+    #if UNITY_EDITOR
+      UnityEditor.EditorApplication.isPlaying = false;
+    #else
+      Application.Quit();
+    #endif
   }
 
   // USE THE METHODS BELOW BY ATTACHING THIS SCRIPT TO AN EVENT TRIGGER ON YOUR UI BUTTONS
@@ -147,10 +145,9 @@ public class UIManager : Singleton<UIManager>
     AudioManager.Instance.PlayClip(AudioManager.Instance.UISfxManager.errorSound, AudioCategory.UI, 1, pitch);
   }
 
-  public void UpdateUI()
+  public void RefreshUI()
   {
-    countSlider.value = boidsSettings.boidCount;
-    countValue.text = boidsSettings.boidCount.ToString("0.00");
+    // HUD
     sepSlider.value = boidsSettings.separationStrength;
     sepValue.text = boidsSettings.separationStrength.ToString("0.00");
     alignSlider.value = boidsSettings.alignmentStrength;
@@ -163,5 +160,10 @@ public class UIManager : Singleton<UIManager>
     forceValue.text = boidsSettings.maxAccel.ToString("0.00");
     perceptSlider.value = boidsSettings.perceptionRange;
     perceptValue.text = boidsSettings.perceptionRange.ToString("0.00");
+    // OPTIONS MENU
+    boidCount.text = boidsSettings.boidCount.ToString();
+    simMethod.text = boidsSettings.boidMethod.ToString();
+    countSlider.value = boidsSettings.boidCount;
+    countSliderValue.text = boidsSettings.boidCount.ToString("0.00");
   }
 }

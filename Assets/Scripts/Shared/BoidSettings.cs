@@ -59,7 +59,7 @@ public class BoidSettings : ScriptableObject
     perceptionRange = initPerceptRange;
     boundsOn = true;
     drawDebugLines = false;
-    UIManager.Instance.UpdateUI();
+    UIManager.Instance.RefreshUI();
   }
   public void Reset()
   {

@@ -162,7 +162,7 @@ public class UIManager : Singleton<UIManager>
     perceptValue.text = boidsSettings.perceptionRange.ToString("0.00");
     // OPTIONS MENU
     boidCount.text = boidsSettings.boidCount.ToString();
-    simMethod.text = boidsSettings.boidMethod.ToString();
+    simMethod.text = boidsSettings.simMethod.ToString();
     countSlider.value = boidsSettings.boidCount;
     countSliderValue.text = boidsSettings.boidCount.ToString("0.00");
   }

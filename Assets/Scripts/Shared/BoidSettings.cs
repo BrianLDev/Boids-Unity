@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum BoidMethod { Individual, Manager, MgrJobs, MgrJobsECS }
+public enum SimMethod { Individual, Manager, MgrJobs, MgrJobsECS }
 
 [CreateAssetMenu(fileName = "BoidSettings", menuName = "ScriptableObjects/BoidSettings", order = 1)]
 public class BoidSettings : ScriptableObject
 {
-  public BoidMethod boidMethod = BoidMethod.Individual;
+  public SimMethod simMethod = SimMethod.Individual;
   public int boidCount;
   [Tooltip("Game Object for boid including 3d model, animations, etc")]
   public GameObject boidPrefab;

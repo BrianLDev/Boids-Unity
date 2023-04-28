@@ -32,26 +32,26 @@ public class BoidSpawner : MonoBehaviour
   private void Start()
   {
     boidSettings.ResetSettings();
-    SpawnBoids(boidSettings.boidCount, boidSettings.boidMethod);
+    SpawnBoids(boidSettings.boidCount, boidSettings.simMethod);
 
     if (mainVCam)
       WatchMainCamera();
-    if (boidSettings.boidMethod == BoidMethod.Individual)
+    if (boidSettings.simMethod == SimMethod.Individual)
       Debug.Log("Total boids: " + Boid.boidList.Count);
     else
       Debug.Log("Total boids: " + boidManager.BoidCount);
   }
 
-  public void SpawnBoids(int number, BoidMethod method)
+  public void SpawnBoids(int number, SimMethod method)
   {
     Debug.Log("Spawning " + number + " boids using method: " + method.ToString());
-    if (method == BoidMethod.Individual)
+    if (method == SimMethod.Individual)
       SpawnBoidsIndividual(number);
-    else if (method == BoidMethod.Manager)
+    else if (method == SimMethod.Manager)
       SpawnBoidsManager(number);
-    else if (method == BoidMethod.MgrJobs)
+    else if (method == SimMethod.MgrJobs)
       SpawnBoidsMgrJobs(number);
-    else if (method == BoidMethod.MgrJobsECS)
+    else if (method == SimMethod.MgrJobsECS)
       SpawnBoidsMgrJobsEcs(number);
   }
 
@@ -111,7 +111,7 @@ public class BoidSpawner : MonoBehaviour
       fishVCam.gameObject.SetActive(true);
       int randomBoid = Random.Range(0, boidSettings.boidCount);
       // TODO - SET UP FOLLOW CAM FOR BOID MANAGER METHODS (ELSE CONDITION)
-      if (boidSettings.boidMethod == BoidMethod.Individual)
+      if (boidSettings.simMethod == SimMethod.Individual)
         fishVCam.Follow = fishVCam.LookAt = Boid.boidList[randomBoid].transform;
       else
         fishVCam.Follow = fishVCam.LookAt = Boid.boidList[randomBoid].transform;

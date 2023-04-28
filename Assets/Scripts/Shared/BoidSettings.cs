@@ -39,7 +39,7 @@ public class BoidSettings : ScriptableObject
   private const float initMaxForce = 0.4f;
   private const float initPerceptRange = 0.75f;
 
-  public void ChangeCount(int count) => boidCount = Mathf.Clamp(count, 1, maxBoidCount);
+  public void ChangeCount(float count) => boidCount = Mathf.Clamp((int)count, 1, maxBoidCount);
   public void ChangeSeparation(float separation) => separationStrength = Mathf.Clamp(separation, 0, 1);
   public void ChangeAlignment(float alignment) => alignmentStrength = Mathf.Clamp(alignment, 0, 1);
   public void ChangeCohesion(float cohesion) => cohesionStrength = Mathf.Clamp(cohesion, 0, 1);

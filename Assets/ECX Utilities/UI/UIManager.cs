@@ -6,8 +6,6 @@ using EcxUtilities;
 using UnityEngine.UI;
 using TMPro;
 
-// TODO: CONNECT PAUSE MENU UI TO UI MANAGER (DROPDOWN, BOID COUNT, ETC)
-
 public class UIManager : Singleton<UIManager>
 {
   [SerializeField] private BoidSettings boidsSettings;

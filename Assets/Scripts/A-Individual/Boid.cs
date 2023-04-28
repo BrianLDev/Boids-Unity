@@ -71,7 +71,7 @@ public class Boid : MonoBehaviour
     // velocity = Vector3.Lerp(velocity, velocity + acceleration, Time.deltaTime * boidSettings.speed * 2);
     velocity += acceleration;
     velocity = Vector3.ClampMagnitude(velocity, boidSettings.speed);
-    // Move position and rotation
+    // Update position and rotation
     if (velocity != Vector3.zero) {
       transform.position += velocity * Time.deltaTime;
       transform.rotation = Quaternion.LookRotation(velocity);
@@ -90,7 +90,7 @@ public class Boid : MonoBehaviour
         targetPosition = boundaryCenter + (boundaryCenter - transform.position);
         turningAround = true;
       }
-      // Keep turning and moving towards targetPosition
+      // Keep turning and moving towards targetPosition until targetRotation reached
       targetRotation = Quaternion.LookRotation(targetPosition);
       transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * boidSettings.speed);
       velocity = Vector3.Slerp(velocity, targetPosition - transform.position, Time.deltaTime * boidSettings.speed);
@@ -102,7 +102,8 @@ public class Boid : MonoBehaviour
 
   private void Flocking()
   {
-    FindNeighbors();    // do once and store data used for all 3 methods in a dictionary for efficiency and speed
+    // Since there is overlap in the data needed for Separation, Alignment & Cohesion, gather all the data once and store in a dictionary for efficiency and fast lookups
+    FindNeighbors();
 
     Separation();
     Alignment();
@@ -139,7 +140,7 @@ public class Boid : MonoBehaviour
     }
   }
 
-  // SEPARATION (aka buffer) = Steer to avoid crowding local flockmates
+  // SEPARATION (aka buffer) == Steer to avoid crowding local flockmates
   private void Separation()
   {
     if (boidSettings.separationStrength > 0)
@@ -151,9 +152,9 @@ public class Boid : MonoBehaviour
         foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors)
         {
           // Adjust range depending on strength
-          if (item.Value.Item4 < boidSettings.perceptionRange * boidSettings.separationStrength)  // Item4 = squaredDistance
+          if (item.Value.Item4 < boidSettings.perceptionRange * boidSettings.separationStrength)  // Item4 == squaredDistance
           {
-            separationForce -= item.Value.Item3;    // Item3 = vectorBetween
+            separationForce -= item.Value.Item3;    // Item3 == vectorBetween
           }
         }
         separationForce *= boidSettings.separationStrength;
@@ -165,7 +166,7 @@ public class Boid : MonoBehaviour
     }
   }
 
-  // ALIGNMENT (aka avg direction) = Steer towards the average heading of local flockmates
+  // ALIGNMENT (aka avg direction) == Steer towards the average heading of local flockmates
   private void Alignment()
   {
     if (boidSettings.alignmentStrength > 0)
@@ -176,7 +177,7 @@ public class Boid : MonoBehaviour
       {
         foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors)
         {
-          alignmentForce += item.Value.Item2; // Sum all neighbor velocities (Item2 = velocity)
+          alignmentForce += item.Value.Item2; // Sum all neighbor velocities (Item2 == velocity)
         }
         alignmentForce /= neighbors.Count;
         alignmentForce *= boidSettings.alignmentStrength;
@@ -188,7 +189,7 @@ public class Boid : MonoBehaviour
     }
   }
 
-  // COHESION (aka center) = Steer to move toward the central position of local flockmates
+  // COHESION (aka center) == Steer to move toward the central position of local flockmates
   private void Cohesion()
   {
     if (boidSettings.cohesionStrength > 0)
@@ -199,7 +200,7 @@ public class Boid : MonoBehaviour
       {
         foreach (KeyValuePair<Boid, (Vector3, Vector3, Vector3, float)> item in neighbors)
         {
-          cohesionForce += item.Value.Item1; // Sum all neighbor positions (Item1 = position)
+          cohesionForce += item.Value.Item1; // Sum all neighbor positions (Item1 == position)
         }
         cohesionForce /= neighbors.Count;   // Get average position (center)
         cohesionForce -= transform.position; // Convert to a vector pointing from boid to center

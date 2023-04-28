@@ -32,7 +32,7 @@ public class BoidSpawner : MonoBehaviour
   private void Start()
   {
     boidSettings.ResetSettings();
-    SpawnBoids(boidSettings.boidCount, boidSettings.simMethod);
+    SpawnBoids();
 
     if (mainVCam)
       WatchMainCamera();
@@ -42,21 +42,29 @@ public class BoidSpawner : MonoBehaviour
       Debug.Log("Total boids: " + boidManager.BoidCount);
   }
 
-  public void SpawnBoids(int number, SimMethod method)
+  public void SpawnBoids()
   {
+    int number = boidSettings.boidCount;
+    SimMethod method = boidSettings.simMethod;
     Debug.Log("Spawning " + number + " boids using method: " + method.ToString());
     if (method == SimMethod.Individual)
-      SpawnBoidsIndividual(number);
+      SpawnBoidsIndividual();
     else if (method == SimMethod.Manager)
-      SpawnBoidsManager(number);
+      SpawnBoidsManager();
     else if (method == SimMethod.MgrJobs)
-      SpawnBoidsMgrJobs(number);
+      SpawnBoidsMgrJobs();
     else if (method == SimMethod.MgrJobsECS)
-      SpawnBoidsMgrJobsEcs(number);
+      SpawnBoidsMgrJobsEcs();
   }
 
-  public void SpawnBoidsIndividual(int number)
+  private void SpawnBoidsIndividual()
   {
+    // Create or clear BoidList
+    if (Boid.boidList == null)
+      Boid.boidList = new List<Boid>();
+    else
+      Boid.boidList.Clear();
+    // Spawn Boids
     Boid newBoid;
     for (int i = 0; i < boidSettings.boidCount; i++)
     {
@@ -67,26 +75,32 @@ public class BoidSpawner : MonoBehaviour
     }
   }
 
-  public void SpawnBoidsManager(int number) {
+  private void SpawnBoidsManager() {
     // TODO: WRITE THIS
   }
 
-  public void SpawnBoidsMgrJobs(int number) {
+  private void SpawnBoidsMgrJobs() {
     // TODO: WRITE THIS
   }
 
-  public void SpawnBoidsMgrJobsEcs(int number) {
+  private void SpawnBoidsMgrJobsEcs() {
     // TODO: WRITE THIS
   }
 
   public void RespawnBoids()
   {
-    // TODO: KILL BOIDS THEN RESPAWN
+    KillBoids();
+    SpawnBoids();
   }
 
   public void KillBoids()
   {
-    // TODO: KILL BOIDS
+    if (boidSettings.simMethod == SimMethod.Individual) {
+      foreach (Boid boid in Boid.boidList) {
+        Destroy(boid.gameObject);
+      }
+    }
+    // TODO: WRITE KILL SCRIPT FOR OTHER SIM METHODS
   }
 
   public void ToggleCamera()

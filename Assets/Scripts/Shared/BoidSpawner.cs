@@ -39,7 +39,7 @@ public class BoidSpawner : MonoBehaviour
     if (boidSettings.simMethod == SimMethod.Individual)
       Debug.Log("Total boids: " + Boid.boidList.Count);
     else
-      Debug.Log("Total boids: " + boidManager.BoidCount);
+      Debug.Log("Total boids: " + BoidManager.BoidCount);
   }
 
   public void SpawnBoids()

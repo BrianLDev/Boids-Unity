@@ -72,7 +72,7 @@ public class Boid : MonoBehaviour
     velocity += acceleration;
     velocity = Vector3.ClampMagnitude(velocity, boidSettings.speed);
     if (velocity.sqrMagnitude <= .1f)
-      velocity = Random.onUnitSphere;
+      velocity = transform.forward * boidSettings.speed;
     // Update position and rotation
     if (velocity != Vector3.zero) {
       transform.position += velocity * Time.deltaTime;

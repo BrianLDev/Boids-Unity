@@ -38,7 +38,7 @@ public class BoidSettings : ScriptableObject
   private const float initMass = 1;
   private const float initSpeed = 2.5f;
   private const float initMaxForce = 0.4f;
-  private const float initPerceptRange = 0.75f;
+  private const float initPerceptRange = 1.0f;
 
   public void ChangeCount(float count) => boidCount = Mathf.Clamp((int)count, 1, maxBoidCount);
   public void ChangeSeparation(float separation) => separationStrength = Mathf.Clamp(separation, 0, 1);

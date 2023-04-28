@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
-using UnityEditor;
 using UnityEngine;
 
 public class BoidSpawner : MonoBehaviour
@@ -16,11 +15,6 @@ public class BoidSpawner : MonoBehaviour
 
   private void Awake()
   {
-    // Fail safe to auto-load boidSettings, but ideally just pre-assign the settings in the Unity Editor
-    if (!boidSettings) {
-      string path = AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("BoidSettings")[1]);
-      boidSettings = AssetDatabase.LoadAssetAtPath<BoidSettings>(path);
-    }
     boidSettings.boundsOn = true;
 
     if (!spawnLocation)

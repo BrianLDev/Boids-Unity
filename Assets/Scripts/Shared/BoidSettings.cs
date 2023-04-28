@@ -36,7 +36,7 @@ public class BoidSettings : ScriptableObject
   private const float initAlignStr = 0.55f;
   private const float initCohesStr = 0.4f;
   private const float initMass = 1;
-  private const float initSpeed = 1.25f;
+  private const float initSpeed = 2.5f;
   private const float initMaxForce = 0.4f;
   private const float initPerceptRange = 0.75f;
 

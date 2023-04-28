@@ -8,6 +8,7 @@ public enum SimMethod { Individual, Manager, MgrJobs, MgrJobsECS }
 public class BoidSettings : ScriptableObject
 {
   public SimMethod simMethod = SimMethod.Individual;
+  public SimMethod nextSimMethod = SimMethod.Individual;    // Used to track the next method used on respawn
   public int boidCount;
   [Tooltip("Game Object for boid including 3d model, animations, etc")]
   public GameObject boidPrefab;
@@ -49,6 +50,8 @@ public class BoidSettings : ScriptableObject
 
   public void ResetSettings()
   {
+    simMethod = SimMethod.Individual;
+    nextSimMethod = SimMethod.Individual;
     boidCount = initBoidCount;
     separationStrength = initSeparStr;
     alignmentStrength = initAlignStr;

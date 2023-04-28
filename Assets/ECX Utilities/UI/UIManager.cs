@@ -36,6 +36,7 @@ public class UIManager : Singleton<UIManager>
   private Canvas currentCanvas;
   private AudioManager audioManager;
   private bool isOptionsUIVisible = false;
+  private SimMethod nextSimMethod;
 
   private void Start()
   {
@@ -163,5 +164,11 @@ public class UIManager : Singleton<UIManager>
     simMethod.text = boidsSettings.simMethod.ToString();
     countSlider.value = boidsSettings.boidCount;
     countSliderValue.text = boidsSettings.boidCount.ToString("0.00");
+  }
+
+  public void UpdateDropdownSimMethod(int option) {
+    Debug.Log("setting nextSimMethod to " + (SimMethod)option);
+    boidsSettings.nextSimMethod = (SimMethod)option;
+    Debug.Log(boidsSettings.nextSimMethod.ToString());
   }
 }

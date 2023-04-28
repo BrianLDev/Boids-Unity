@@ -44,16 +44,16 @@ public class BoidSpawner : MonoBehaviour
 
   public void SpawnBoids()
   {
-    int number = boidSettings.boidCount;
-    SimMethod method = boidSettings.simMethod;
-    Debug.Log("Spawning " + number + " boids using method: " + method.ToString());
-    if (method == SimMethod.Individual)
+    if (boidSettings.nextSimMethod != boidSettings.simMethod)
+      boidSettings.simMethod = boidSettings.nextSimMethod;
+    Debug.Log("Spawning " + boidSettings.boidCount + " boids using method: " + boidSettings.simMethod.ToString());
+    if (boidSettings.simMethod == SimMethod.Individual)
       SpawnBoidsIndividual();
-    else if (method == SimMethod.Manager)
+    else if (boidSettings.simMethod == SimMethod.Manager)
       SpawnBoidsManager();
-    else if (method == SimMethod.MgrJobs)
+    else if (boidSettings.simMethod == SimMethod.MgrJobs)
       SpawnBoidsMgrJobs();
-    else if (method == SimMethod.MgrJobsECS)
+    else if (boidSettings.simMethod == SimMethod.MgrJobsECS)
       SpawnBoidsMgrJobsEcs();
   }
 
@@ -91,6 +91,7 @@ public class BoidSpawner : MonoBehaviour
   {
     KillBoids();
     SpawnBoids();
+    UIManager.Instance.RefreshUI();
   }
 
   public void KillBoids()
@@ -99,6 +100,7 @@ public class BoidSpawner : MonoBehaviour
       foreach (Boid boid in Boid.boidList) {
         Destroy(boid.gameObject);
       }
+      Boid.boidList.Clear();
     }
     // TODO: WRITE KILL SCRIPT FOR OTHER SIM METHODS
   }
